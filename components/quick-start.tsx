@@ -9,11 +9,11 @@ import { CopyButton } from './ui/copy-button';
 import { Cmd, Comment, Cursor, Flag, Line, Terminal } from './ui/terminal';
 
 type Tab = 'unix' | 'windows' | 'docker';
-type Channel = 'stable' | 'next';
+type Channel = 'stable' | 'canary';
 
 function getTabs(channel: Channel) {
-  const isNext = channel === 'next';
-  const dockerTag = isNext ? 'next' : 'latest';
+  const isCanary = channel === 'canary';
+  const dockerTag = isCanary ? 'canary' : 'latest';
   const dockerImage = `${docker.image}:${dockerTag}`;
 
   const tabs: {
@@ -32,18 +32,18 @@ function getTabs(channel: Channel) {
       label: 'macOS / Linux',
       shortLabel: 'Unix',
       icon: FaApple,
-      command: isNext
-        ? `curl -fsSL ${site.url}/install.sh | bash -s next`
+      command: isCanary
+        ? `curl -fsSL ${site.url}/install.sh | bash -s canary`
         : `curl -fsSL ${site.url}/install.sh | bash`,
-      comment: isNext
-        ? '# Install latest development build.'
+      comment: isCanary
+        ? '# Install latest canary build.'
         : '# One command. No sudo. No dependencies.',
       note: 'macOS (Intel & Apple Silicon) \u00b7 Linux (x64 & arm64)',
       output: '\u2713 Brika installed to ~/.brika/bin/brika',
-      body: isNext ? (
+      body: isCanary ? (
         <>
           <Cmd>curl</Cmd> <Flag>-fsSL</Flag> <span>{site.url}/install.sh</span>{' '}
-          <Flag>|</Flag> <Cmd>bash</Cmd> <Flag>-s</Flag> <span>next</span>
+          <Flag>|</Flag> <Cmd>bash</Cmd> <Flag>-s</Flag> <span>canary</span>
         </>
       ) : (
         <>
@@ -57,18 +57,18 @@ function getTabs(channel: Channel) {
       label: 'Windows',
       shortLabel: 'Win',
       icon: FaWindows,
-      command: isNext
-        ? `irm ${site.url}/install.ps1 -out i.ps1; ./i.ps1 next`
+      command: isCanary
+        ? `irm ${site.url}/install.ps1 -out i.ps1; ./i.ps1 canary`
         : `iwr -useb ${site.url}/install.ps1 | iex`,
-      comment: isNext
-        ? '# Install latest development build.'
+      comment: isCanary
+        ? '# Install latest canary build.'
         : '# PowerShell one-liner. No admin required.',
       note: 'PowerShell 5.1+ \u00b7 Windows 10/11 (x64 & arm64)',
       output: '\u2713 Brika installed successfully',
-      body: isNext ? (
+      body: isCanary ? (
         <>
           <Cmd>irm</Cmd> <span>{site.url}/install.ps1</span> <Flag>-out</Flag>{' '}
-          <span>i.ps1</span><Flag>;</Flag> <Cmd>./i.ps1</Cmd> <span>next</span>
+          <span>i.ps1</span><Flag>;</Flag> <Cmd>./i.ps1</Cmd> <span>canary</span>
         </>
       ) : (
         <>
@@ -83,8 +83,8 @@ function getTabs(channel: Channel) {
       shortLabel: 'Docker',
       icon: FaDocker,
       command: `docker run -d -p ${docker.port}:${docker.port} --name brika ${dockerImage}`,
-      comment: isNext
-        ? '# Run latest development build from GHCR.'
+      comment: isCanary
+        ? '# Run latest canary build from GHCR.'
         : '# Pull and run. That\u2019s it.',
       note: `Docker 20+ \u00b7 Exposes on port ${docker.port} \u00b7 Works on any OS`,
       output: `\u2713 Container started on http://localhost:${docker.port}`,
@@ -173,15 +173,15 @@ export function QuickStart() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setChannel('next')}
+                      onClick={() => setChannel('canary')}
                       className={cn(
                         'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider transition-all cursor-pointer sm:px-2.5',
-                        channel === 'next'
+                        channel === 'canary'
                           ? 'bg-primary/15 text-primary'
                           : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
                       )}
                     >
-                      next
+                      canary
                     </button>
                   </div>
                   <div className="border-l border-code-border pl-2 sm:pl-3">
@@ -202,8 +202,8 @@ export function QuickStart() {
           </Terminal>
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
-            {channel === 'next' && (
-              <span className="text-warning">Unstable dev build &middot; </span>
+            {channel === 'canary' && (
+              <span className="text-warning">Unstable canary build &middot; </span>
             )}
             {current.note}
           </p>

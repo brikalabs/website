@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { github, site } from '@/lib/config';
 import './globals.css';
 
-const title = `${site.name} — ${site.tagline}`;
+const title = `${site.name} - ${site.tagline}`;
 
 export const metadata: Metadata = {
   title,

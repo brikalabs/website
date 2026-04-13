@@ -207,7 +207,7 @@ export function Bricks({
               </h2>
               <p className="leading-relaxed text-muted-foreground">
                 Bricks are live dashboard cards that plugins provide. Weather, timers, device
-                controls, music — each brick displays real-time data and actions on a customizable
+                controls, music. Each brick displays real-time data and actions on a customizable
                 grid.
               </p>
               <ul className="mt-6 space-y-2 text-sm text-muted-foreground">

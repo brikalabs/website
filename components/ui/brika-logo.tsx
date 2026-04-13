@@ -10,8 +10,8 @@ interface BrikaLogoProps extends SVGProps<SVGSVGElement> {
 /**
  * Brika brand logo.
  *
- * - `mark` (default) — icon shapes only, colored via `currentColor`
- * - `full` — black rounded-rect background with white shapes
+ * - `mark` (default) - icon shapes only, colored via `currentColor`
+ * - `full` - black rounded-rect background with white shapes
  */
 export function BrikaLogo({ variant = 'mark', className, ...props }: Readonly<BrikaLogoProps>) {
   const isFull = variant === 'full';

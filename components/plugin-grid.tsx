@@ -1,13 +1,13 @@
 'use client';
 
 import { BadgeCheck, Download, Package } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { npm } from '@/lib/config';
 import type { Plugin } from '@/lib/plugins';
 import { useTilt3D } from '@/lib/use-tilt-3d';
 import { cn } from '@/lib/utils';
 
-const MIN_CARDS = 8;
+const MIN_CARDS = 10;
 
 function formatDownloads(n: number) {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
@@ -19,6 +19,20 @@ function repeat<T>(items: T[], min: number): T[] {
   const out: T[] = [];
   while (out.length < min) out.push(...items);
   return out;
+}
+
+/** Deterministic interleave: pick from alternating ends for visual variety. */
+function interleave<T>(items: T[]): T[] {
+  const sorted = [...items];
+  const result: T[] = [];
+  let left = 0;
+  let right = sorted.length - 1;
+  let pickLeft = false;
+  while (left <= right) {
+    result.push(sorted[pickLeft ? left++ : right--]);
+    pickLeft = !pickLeft;
+  }
+  return result;
 }
 
 /* ── Icon with fallback ── */
@@ -115,6 +129,50 @@ function PluginCard({
   );
 }
 
+/* ── Smooth playback rate lerp ── */
+function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let target = 1;
+    let current = 1;
+    let raf = 0;
+
+    function tick() {
+      current += (target - current) * 0.07;
+
+      const anim = track.getAnimations()[0];
+      if (Math.abs(current - target) < 0.005) {
+        current = target;
+        if (anim) anim.playbackRate = current;
+        raf = 0;
+        return;
+      }
+
+      if (anim) anim.playbackRate = current;
+      raf = requestAnimationFrame(tick);
+    }
+
+    function startLerp() {
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+
+    const row = track.parentElement;
+    const enter = () => { target = 0; startLerp(); };
+    const leave = () => { target = 1; startLerp(); };
+
+    row?.addEventListener('mouseenter', enter);
+    row?.addEventListener('mouseleave', leave);
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      row?.removeEventListener('mouseenter', enter);
+      row?.removeEventListener('mouseleave', leave);
+    };
+  }, [trackRef]);
+}
+
 /* ── Marquee row ── */
 function MarqueeRow({
   plugins,
@@ -126,17 +184,19 @@ function MarqueeRow({
   duration?: number;
 }>) {
   const cards = repeat(plugins, MIN_CARDS);
+  const trackRef = useRef<HTMLDivElement>(null);
+  useMarqueeHover(trackRef);
 
   return (
     <div
-      className="marquee-row overflow-hidden"
+      className="marquee-row"
       style={
         {
           '--marquee-duration': `${duration}s`,
         } as React.CSSProperties
       }
     >
-      <div className={cn('marquee-track flex gap-5', reverse && 'marquee-reverse')}>
+      <div ref={trackRef} className={cn('marquee-track flex gap-5', reverse && 'marquee-reverse')}>
         {[0, 1].map((copy) => (
           <div key={copy} className="flex shrink-0 gap-5" aria-hidden={copy === 1}>
             {cards.map((plugin, i) => (
@@ -155,14 +215,14 @@ export function PluginGrid({
 }: Readonly<{
   plugins: Plugin[];
 }>) {
-  const mid = Math.ceil(plugins.length / 2);
-  const row1 = plugins.slice(0, mid);
-  const row2 = plugins.slice(mid);
+  // Both rows show all plugins in different orders to avoid
+  // obvious repetition (especially visible with few plugins).
+  const row2 = interleave(plugins);
 
   return (
-    <div className="marquee-container space-y-5">
-      <MarqueeRow plugins={row1} duration={35} />
-      {row2.length > 0 && <MarqueeRow plugins={row2} reverse duration={45} />}
+    <div className="marquee-container space-y-4">
+      <MarqueeRow plugins={plugins} duration={40} />
+      <MarqueeRow plugins={row2} reverse duration={50} />
     </div>
   );
 }

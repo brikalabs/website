@@ -132,8 +132,9 @@ function PluginCard({
 /* ── Smooth playback rate lerp ── */
 function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
-    const track = trackRef.current;
+    const track: HTMLDivElement | null = trackRef.current;
     if (!track) return;
+    const el = track;
 
     let target = 1;
     let current = 1;
@@ -142,7 +143,7 @@ function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
     function tick() {
       current += (target - current) * 0.07;
 
-      const anim = track.getAnimations()[0];
+      const anim = el.getAnimations()[0];
       if (Math.abs(current - target) < 0.005) {
         current = target;
         if (anim) anim.playbackRate = current;

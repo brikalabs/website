@@ -37,7 +37,7 @@ export function OpenSource() {
               Built in the open
             </h2>
             <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
-              Brika is MIT-licensed and open source. Read the code, fork it, contribute — it&apos;s
+              Brika is MIT-licensed and open source. Read the code, fork it, contribute. It&apos;s
               yours.
             </p>
 

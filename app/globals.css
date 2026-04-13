@@ -416,11 +416,6 @@
   }
 
   /* ── Plugin marquee ── */
-  .marquee-container {
-    -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
-  }
-
   .marquee-track {
     animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
     will-change: transform;
@@ -428,10 +423,6 @@
 
   .marquee-reverse {
     animation-direction: reverse;
-  }
-
-  .marquee-row:hover .marquee-track {
-    animation-play-state: paused;
   }
 
   /* ── Button border glow ── */
@@ -504,7 +495,7 @@
   }
 }
 
-/* ── Brick grid (react-grid-layout) — outside @layer to beat library specificity ── */
+/* ── Brick grid (react-grid-layout) - outside @layer to beat library specificity ── */
 .brick-grid .react-grid-item.react-grid-placeholder {
   border-radius: 1rem;
   border: 2px dashed var(--border);
@@ -520,7 +511,7 @@
     box-shadow 0.2s ease-out;
 }
 
-/* ── Scroll-driven parallax (2026 CSS — no JS needed) ── */
+/* ── Scroll-driven parallax (2026 CSS - no JS needed) ── */
 @supports (animation-timeline: scroll()) {
   .hero-parallax {
     animation: parallax-fade linear both;

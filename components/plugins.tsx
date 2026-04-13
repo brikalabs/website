@@ -12,7 +12,7 @@ export async function Plugins() {
   if (plugins.length === 0) return null;
 
   return (
-    <AnimatedSection id="plugins" className="py-20 md:py-28">
+    <AnimatedSection id="plugins" className="overflow-x-clip py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-6 flex justify-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
@@ -40,7 +40,7 @@ export async function Plugins() {
             <h3 className="mb-3 text-2xl font-bold tracking-tight">Build your own plugin</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">
               Scaffold a plugin in one command. Define blocks, bricks, and integrations with full
-              TypeScript inference. Ship as an npm package — Brika handles isolation, IPC, and
+              TypeScript inference. Ship as an npm package. Brika handles isolation, IPC, and
               hot-reload.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">

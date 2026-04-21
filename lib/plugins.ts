@@ -1,6 +1,5 @@
 import type { Locale } from '@/i18n/routing';
 import { excludedPlugins, npm, registry } from '@/lib/config';
-import { translateBatch } from '@/lib/translate';
 
 export interface Plugin {
   name: string;
@@ -84,7 +83,7 @@ export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
     locale === 'en' ? null : Promise.all(packages.map((p) => localeFile(p.name, locale))),
   ]);
 
-  const plugins = packages
+  return packages
     .map((p, i) => ({
       name: p.name,
       displayName:
@@ -99,29 +98,4 @@ export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
       iconUrl: `${npm.unpkgUrl}/${p.name}/icon.svg`,
     }))
     .sort((a, b) => b.downloads - a.downloads);
-
-  if (locale === 'en') return plugins;
-
-  const localizedByName = new Map(
-    packages.map((p, i) => [p.name, localized?.[i]] as const)
-  );
-
-  const entries = plugins.flatMap((p, i) => {
-    const loc = localizedByName.get(p.name);
-    const items: { idx: number; text: string }[] = [];
-    if (!loc?.name) items.push({ idx: i * 2, text: p.displayName });
-    if (!loc?.description) items.push({ idx: i * 2 + 1, text: p.description });
-    return items;
-  });
-  const translated = await translateBatch(
-    entries.map((e) => e.text),
-    locale
-  );
-  const byIdx = new Map(entries.map((e, k) => [e.idx, translated[k]]));
-
-  return plugins.map((p, i) => ({
-    ...p,
-    displayName: byIdx.get(i * 2) ?? p.displayName,
-    description: byIdx.get(i * 2 + 1) ?? p.description,
-  }));
 }

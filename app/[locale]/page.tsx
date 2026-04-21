@@ -66,7 +66,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
   const lat = h.get('x-geo-latitude');
   const lon = h.get('x-geo-longitude');
   const city = h.get('x-geo-city');
-  const weather = lat && lon && city ? await fetchWeatherData(lat, lon, city, locale) : null;
+  const weather = lat && lon && city ? await fetchWeatherData(lat, lon, city) : null;
 
   return (
     <>

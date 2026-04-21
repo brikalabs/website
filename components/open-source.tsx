@@ -11,7 +11,7 @@ export async function OpenSource() {
   return (
     <AnimatedSection className="py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="relative overflow-hidden rounded-3xl corner-squircle border border-border bg-surface px-6 py-16 text-center md:px-16">
+        <div className="corner-squircle relative overflow-hidden rounded-3xl border border-border bg-surface px-6 py-16 text-center md:px-16">
           {/* Aurora glow */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
             <div
@@ -22,7 +22,7 @@ export async function OpenSource() {
               }}
             />
             <div
-              className="aurora-blob absolute -bottom-20 right-1/3 size-60"
+              className="aurora-blob absolute right-1/3 -bottom-20 size-60"
               style={{
                 background: 'var(--accent)',
                 animation: 'aurora-drift-2 20s ease-in-out infinite',
@@ -31,17 +31,13 @@ export async function OpenSource() {
           </div>
 
           <div className="relative">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">
               <Heart className="size-3.5" />
               {t('badge')}
             </div>
 
-            <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-              {t('heading')}
-            </h2>
-            <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
-              {t('description')}
-            </p>
+            <h2 className="mb-4 font-bold text-3xl tracking-tight md:text-4xl">{t('heading')}</h2>
+            <p className="mx-auto mb-8 max-w-lg text-muted-foreground">{t('description')}</p>
 
             <Button
               href={github.url}

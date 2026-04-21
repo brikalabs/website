@@ -52,7 +52,7 @@ export default function WeatherBrick() {
     >
       {/* Ambient glow */}
       <div
-        className="pointer-events-none absolute -top-[10%] -right-[10%] h-[55%] aspect-square rounded-full animate-pulse"
+        className="pointer-events-none absolute -top-[10%] -right-[10%] aspect-square h-[55%] animate-pulse rounded-full"
         style={{
           background: theme.glow,
           filter: 'blur(24px)',
@@ -67,7 +67,7 @@ export default function WeatherBrick() {
         }}
       />
       <div>
-        <div className="text-[clamp(1.25rem,22%,1.5rem)] font-bold leading-tight tracking-tight">
+        <div className="font-bold text-[clamp(1.25rem,22%,1.5rem)] leading-tight tracking-tight">
           {temp}°C
         </div>
         <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">

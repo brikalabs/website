@@ -31,14 +31,14 @@ export function Nav() {
       className={cn(
         'nav-entrance fixed inset-x-0 top-0 z-50 transition-all duration-500',
         scrolled
-          ? 'bg-background/70 border-b border-border/50 backdrop-blur-2xl backdrop-saturate-150'
+          ? 'border-border/50 border-b bg-background/70 backdrop-blur-2xl backdrop-saturate-150'
           : 'bg-transparent'
       )}
     >
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <a href="#top" className="group flex items-center gap-1">
           <BrikaLogo className="size-7" />
-          <span className="text-lg font-extrabold tracking-tight">BRIKA</span>
+          <span className="font-extrabold text-lg tracking-tight">BRIKA</span>
         </a>
 
         <div className="flex items-center gap-1">

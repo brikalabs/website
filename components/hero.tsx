@@ -40,13 +40,13 @@ export async function Hero({ release }: Readonly<HeroProps>) {
       </div>
 
       {/* Dot grid */}
-      <div className="bg-grid pointer-events-none absolute inset-0 -z-10 opacity-[0.04]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-[0.04]" />
 
       <div className="max-w-4xl text-center">
         {/* Hero logo */}
         <div className="reveal-up mb-10 flex justify-center" style={{ animationDelay: '50ms' }}>
-          <div className="hero-icon p-0.5 rounded-full corner-squircle">
-            <div className="relative z-10 flex size-20 items-center justify-center rounded-full corner-squircle bg-black sm:size-24">
+          <div className="hero-icon corner-squircle rounded-full p-0.5">
+            <div className="corner-squircle relative z-10 flex size-20 items-center justify-center rounded-full bg-black sm:size-24">
               <BrikaLogo className="size-16 text-white sm:size-20" />
             </div>
           </div>
@@ -59,7 +59,7 @@ export async function Hero({ release }: Readonly<HeroProps>) {
             animationDelay: '200ms',
           }}
         >
-          <div className="badge-glow inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+          <div className="badge-glow inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">
             <Sparkles className="size-3.5 shrink-0" />
             <span>{t('badge')}</span>
           </div>
@@ -68,7 +68,7 @@ export async function Hero({ release }: Readonly<HeroProps>) {
               href={release.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/50 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground hover:bg-surface"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/50 px-3 py-1.5 font-medium text-muted-foreground text-xs backdrop-blur-sm transition-colors hover:bg-surface hover:text-foreground"
             >
               <Tag className="size-3 shrink-0" />
               {release.version}
@@ -76,7 +76,7 @@ export async function Hero({ release }: Readonly<HeroProps>) {
           )}
         </div>
 
-        <h1 className="text-4xl leading-[1.1] font-extrabold tracking-tight sm:text-5xl md:text-7xl">
+        <h1 className="font-extrabold text-4xl leading-[1.1] tracking-tight sm:text-5xl md:text-7xl">
           <span className="block overflow-hidden pb-1">
             <span
               className="text-reveal-word"
@@ -116,7 +116,7 @@ export async function Hero({ release }: Readonly<HeroProps>) {
         </h1>
 
         <p
-          className="reveal-up mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
+          className="reveal-up mx-auto mt-6 max-w-xl text-lg text-muted-foreground leading-relaxed"
           style={{
             animationDelay: '950ms',
           }}

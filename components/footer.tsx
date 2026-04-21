@@ -12,11 +12,11 @@ export async function Footer() {
         aria-hidden
       />
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <BrikaLogo className="size-5" />
           <span>{t('copyright', { year: new Date().getFullYear() })}</span>
         </div>
-        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+        <div className="flex items-center gap-6 text-muted-foreground text-sm">
           <a
             href={site.docsUrl}
             target="_blank"

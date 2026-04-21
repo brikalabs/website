@@ -14,12 +14,13 @@ export function LocaleToggle() {
   const t = useTranslations('LocaleToggle');
 
   const switchTo = (next: Locale) => {
-    if (next === locale) return;
+    if (next === locale) {
+      return;
+    }
     router.replace(pathname, { locale: next });
   };
 
-  const ariaFor = (l: Locale) =>
-    l === 'fr' ? t('switchToFrench') : t('switchToEnglish');
+  const ariaFor = (l: Locale) => (l === 'fr' ? t('switchToFrench') : t('switchToEnglish'));
 
   return (
     <div className="flex items-center rounded-full border border-border bg-surface/50 p-0.5">
@@ -33,10 +34,8 @@ export function LocaleToggle() {
             aria-label={ariaFor(l)}
             aria-pressed={active}
             className={cn(
-              'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider transition-colors cursor-pointer',
-              active
-                ? 'bg-primary/15 text-primary'
-                : 'text-muted-foreground hover:text-foreground'
+              'cursor-pointer rounded-full px-2 py-0.5 font-semibold text-[10px] uppercase tracking-wider transition-colors',
+              active ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {l}

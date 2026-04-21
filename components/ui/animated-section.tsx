@@ -14,7 +14,9 @@ export function useOnceVisible() {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry?.isIntersecting) {
@@ -53,8 +55,8 @@ export function AnimatedSection({
       ref={ref}
       id={id}
       className={cn(
-        'opacity-0 translate-y-6 transition-[opacity,transform] duration-700 ease-out',
-        visible && 'opacity-100 translate-y-0',
+        'translate-y-6 opacity-0 transition-[opacity,transform] duration-700 ease-out',
+        visible && 'translate-y-0 opacity-100',
         className
       )}
       style={{

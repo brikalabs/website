@@ -15,16 +15,22 @@ export function CopyButton({ value, className }: Readonly<CopyButtonProps>) {
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
 
   const handleCopy = useCallback(async () => {
-    if (!navigator?.clipboard || !value) return;
+    if (!navigator?.clipboard || !value) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
       timeoutRef.current = setTimeout(() => setCopied(false), 1500);
     } catch {
       // Ignore clipboard failures
@@ -39,7 +45,7 @@ export function CopyButton({ value, className }: Readonly<CopyButtonProps>) {
       className={cn(
         'inline-flex items-center justify-center rounded-md p-2',
         'text-muted-foreground hover:text-foreground',
-        'transition-colors duration-150 cursor-pointer',
+        'cursor-pointer transition-colors duration-150',
         'hover:bg-white/5',
         className
       )}

@@ -24,12 +24,10 @@ export default function EnergyBrick() {
           />
         ))}
       </div>
-      <div className="text-[clamp(0.875rem,15%,1.125rem)] font-bold leading-tight tracking-tight">
+      <div className="font-bold text-[clamp(0.875rem,15%,1.125rem)] leading-tight tracking-tight">
         3.2 kWh
       </div>
-      <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">
-        {t('caption')}
-      </div>
+      <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">{t('caption')}</div>
     </div>
   );
 }

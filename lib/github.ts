@@ -20,7 +20,9 @@ export async function fetchLatestRelease(): Promise<{
         },
       }
     );
-    if (!res.ok) return null;
+    if (!res.ok) {
+      return null;
+    }
     const data: GitHubRelease = await res.json();
     return {
       version: data.tag_name,

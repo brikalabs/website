@@ -16,7 +16,9 @@ export function useTilt3D(intensity = 10) {
   const onMouseMove = useCallback(
     (e: React.MouseEvent) => {
       const el = ref.current;
-      if (!el) return;
+      if (!el) {
+        return;
+      }
       const rect = el.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
@@ -30,7 +32,9 @@ export function useTilt3D(intensity = 10) {
 
   const onMouseLeave = useCallback(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     el.style.setProperty('--rx', '0');
     el.style.setProperty('--ry', '0');
   }, []);

@@ -2,8 +2,9 @@ import { ImageResponse } from 'next/og';
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { site } from '@/lib/config';
+import enMessages from '@/messages/en.json';
 
-export const alt = `${site.name} - ${site.tagline}`;
+export const alt = `${site.name} - ${enMessages.Metadata.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

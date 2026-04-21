@@ -1,4 +1,3 @@
-import type { Locale } from '@/i18n/routing';
 import { github } from './config';
 
 interface GitHubRelease {
@@ -8,7 +7,7 @@ interface GitHubRelease {
 
 const REVALIDATE = 600;
 
-export async function fetchLatestRelease(_locale: Locale): Promise<{
+export async function fetchLatestRelease(): Promise<{
   version: string;
   url: string;
 } | null> {

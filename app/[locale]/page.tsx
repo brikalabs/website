@@ -65,7 +65,7 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [release, h] = await Promise.all([fetchLatestRelease(locale), headers()]);
+  const [release, h] = await Promise.all([fetchLatestRelease(), headers()]);
 
   const lat = h.get('x-geo-latitude');
   const lon = h.get('x-geo-longitude');

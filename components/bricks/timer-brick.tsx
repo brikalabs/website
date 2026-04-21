@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 const TOTAL = 300;
@@ -7,6 +8,7 @@ const RADIUS = 28;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export default function TimerBrick() {
+  const t = useTranslations('Bricks.timer');
   const [seconds, setSeconds] = useState(272);
 
   useEffect(() => {
@@ -61,7 +63,7 @@ export default function TimerBrick() {
           </span>
         </div>
       </div>
-      <span className="text-[clamp(8px,9%,11px)] font-medium text-muted-foreground">Remaining</span>
+      <span className="text-[clamp(8px,9%,11px)] font-medium text-muted-foreground">{t('caption')}</span>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   Snowflake,
   Sun,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useContext } from 'react';
 import type { WeatherIcon } from '@/lib/weather';
 import { weatherTheme } from '@/lib/weather';
@@ -33,11 +34,12 @@ const iconMap: Record<
 const DEFAULT_CODE = 0;
 
 export default function WeatherBrick() {
+  const t = useTranslations('Bricks.weather');
   const weather = useContext(WeatherContext);
 
   const temp = weather?.temperature ?? 22;
   const code = weather?.weatherCode ?? DEFAULT_CODE;
-  const city = weather?.city ?? 'Geneva';
+  const city = weather?.city ?? t('defaultCity');
   const theme = weatherTheme(code);
   const Icon = iconMap[theme.icon];
 
@@ -69,7 +71,7 @@ export default function WeatherBrick() {
           {temp}°C
         </div>
         <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">
-          {theme.label} &middot; {city}
+          {t(theme.key)} &middot; {city}
         </div>
       </div>
     </div>

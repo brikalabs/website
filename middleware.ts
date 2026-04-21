@@ -1,15 +1,23 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import type { NextRequest } from 'next/server';
+import { routing } from './i18n/routing';
+
+const intlMiddleware = createMiddleware(routing);
+
+/** Cloudflare `request.cf` geo properties (subset used here). */
+interface IncomingRequestCfProperties {
+  latitude?: string;
+  longitude?: string;
+  city?: string;
+}
 
 /**
- * Forward Cloudflare geolocation data as request headers so that
- * server components can read them via `headers()`.
- *
- * Cloudflare exposes geo properties on `request.cf` (latitude, longitude, city).
- * These are not available as standard HTTP headers, so we copy them into
- * custom `x-geo-*` headers here.
+ * Chain next-intl's locale routing with Cloudflare geo-header forwarding.
+ * Geo data isn't available as standard HTTP headers, so we copy it from
+ * `request.cf` into `x-geo-*` headers for server components to read.
  */
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+  const response = intlMiddleware(request);
 
   const cf = (request as NextRequest & { cf?: IncomingRequestCfProperties }).cf;
   if (cf) {
@@ -21,14 +29,6 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-/** Only run on the homepage where weather data is used. */
 export const config = {
-  matcher: '/',
+  matcher: '/((?!api|_next|_vercel|.*\\..*).*)',
 };
-
-/** Cloudflare `request.cf` geo properties (subset used here). */
-interface IncomingRequestCfProperties {
-  latitude?: string;
-  longitude?: string;
-  city?: string;
-}

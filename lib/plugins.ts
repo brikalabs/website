@@ -1,3 +1,6 @@
+import type { Locale } from '@/i18n/routing';
+import { excludedPlugins, npm, registry } from '@/lib/config';
+
 export interface Plugin {
   name: string;
   displayName: string;
@@ -8,14 +11,14 @@ export interface Plugin {
   iconUrl: string;
 }
 
+interface NpmSearchPackage {
+  name: string;
+  description: string;
+  version: string;
+}
+
 interface NpmSearchResult {
-  objects: {
-    package: {
-      name: string;
-      description: string;
-      version: string;
-    };
-  }[];
+  objects: { package: NpmSearchPackage }[];
 }
 
 interface NpmDownloads {
@@ -26,95 +29,71 @@ interface PluginPackageJson {
   displayName?: string;
 }
 
-interface VerifiedList {
-  plugins: {
-    name: string;
-  }[];
+interface PluginLocaleFile {
+  name?: string;
+  description?: string;
 }
 
-import { npm, registry } from '@/lib/config';
+interface VerifiedList {
+  plugins: { name: string }[];
+}
 
 /** Revalidate every 10 minutes */
 const REVALIDATE = 600;
 
-const EXCLUDED = new Set(['@brika/plugin-example-echo', '@brika/plugin-demo-config']);
-
-function iconUrl(name: string) {
-  return `${npm.unpkgUrl}/${name}/icon.svg`;
+async function fetchJson<T>(url: string): Promise<T | null> {
+  try {
+    const res = await fetch(url, { next: { revalidate: REVALIDATE } });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
 }
 
-function fallbackDisplayName(name: string) {
-  return name.replace(/^@brika\/(plugin-)?/, '');
-}
-
-export async function fetchPlugins(): Promise<Plugin[]> {
-  const [npmRes, registryRes] = await Promise.all([
-    fetch(npm.searchUrl, {
-      next: {
-        revalidate: REVALIDATE,
-      },
-    }),
-    fetch(registry.verifiedPluginsUrl, {
-      next: {
-        revalidate: REVALIDATE,
-      },
-    }),
+export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
+  const [search, verifiedList] = await Promise.all([
+    fetchJson<NpmSearchResult>(npm.searchUrl),
+    fetchJson<VerifiedList>(registry.verifiedPluginsUrl),
   ]);
 
-  const verified = new Set<string>();
-  if (registryRes.ok) {
-    const data: VerifiedList = await registryRes.json();
-    for (const p of data.plugins) verified.add(p.name);
-  }
+  if (!search) return [];
 
-  if (!npmRes.ok) return [];
-  const { objects }: NpmSearchResult = await npmRes.json();
+  const verified = new Set(verifiedList?.plugins.map((p) => p.name) ?? []);
 
-  const packages = objects.map((o) => o.package).filter((p) => !EXCLUDED.has(p.name));
+  const packages = search.objects
+    .map((o) => o.package)
+    .filter((p) => !excludedPlugins.has(p.name));
 
-  // Fetch download counts and package.json (for displayName) in parallel
-  const [downloadResults, pkgJsonResults] = await Promise.all([
-    Promise.allSettled(
+  const localeFile = (name: string, loc: Locale) =>
+    fetchJson<PluginLocaleFile>(`${npm.unpkgUrl}/${name}/locales/${loc}/plugin.json`);
+
+  const [downloads, pkgJsons, enLocales, localized] = await Promise.all([
+    Promise.all(
       packages.map((p) =>
-        fetch(`${npm.downloadsUrl}/${p.name}`, {
-          next: {
-            revalidate: REVALIDATE,
-          },
-        })
-          .then((r) =>
-            r.ok
-              ? r.json()
-              : {
-                  downloads: 0,
-                }
-          )
-          .then((d: NpmDownloads) => d.downloads)
+        fetchJson<NpmDownloads>(`${npm.downloadsUrl}/${p.name}`).then((d) => d?.downloads ?? 0)
       )
     ),
-    Promise.allSettled(
-      packages.map((p) =>
-        fetch(`${npm.unpkgUrl}/${p.name}/package.json`, {
-          next: {
-            revalidate: REVALIDATE,
-          },
-        }).then((r) => (r.ok ? (r.json() as Promise<PluginPackageJson>) : {}))
-      )
+    Promise.all(
+      packages.map((p) => fetchJson<PluginPackageJson>(`${npm.unpkgUrl}/${p.name}/package.json`))
     ),
+    Promise.all(packages.map((p) => localeFile(p.name, 'en'))),
+    locale === 'en' ? null : Promise.all(packages.map((p) => localeFile(p.name, locale))),
   ]);
 
   return packages
-    .map((p, i) => {
-      const pkgJson = pkgJsonResults[i]?.status === 'fulfilled' ? pkgJsonResults[i].value : {};
-
-      return {
-        name: p.name,
-        displayName: (pkgJson as PluginPackageJson).displayName ?? fallbackDisplayName(p.name),
-        description: p.description,
-        version: p.version,
-        downloads: downloadResults[i]?.status === 'fulfilled' ? downloadResults[i].value : 0,
-        verified: verified.has(p.name),
-        iconUrl: iconUrl(p.name),
-      };
-    })
+    .map((p, i) => ({
+      name: p.name,
+      displayName:
+        localized?.[i]?.name ??
+        enLocales[i]?.name ??
+        pkgJsons[i]?.displayName ??
+        p.name.replace(/^@brika\/(plugin-)?/, ''),
+      description: localized?.[i]?.description ?? enLocales[i]?.description ?? p.description,
+      version: p.version,
+      downloads: downloads[i],
+      verified: verified.has(p.name),
+      iconUrl: `${npm.unpkgUrl}/${p.name}/icon.svg`,
+    }))
     .sort((a, b) => b.downloads - a.downloads);
 }

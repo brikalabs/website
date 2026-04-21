@@ -98,10 +98,14 @@ export function weatherTheme(code: number): WeatherTheme {
   };
 }
 
+import type { Locale } from '@/i18n/routing';
+import { translateBatch } from '@/lib/translate';
+
 export async function fetchWeatherData(
   latitude: string,
   longitude: string,
-  city: string
+  city: string,
+  locale: Locale
 ): Promise<WeatherData | null> {
   try {
     const params = new URLSearchParams({
@@ -124,10 +128,12 @@ export async function fetchWeatherData(
         weather_code: number;
       };
     };
+    const decoded = decodeURIComponent(city);
+    const [localizedCity] = await translateBatch([decoded], locale);
     return {
       temperature: Math.round(data.current.temperature_2m),
       weatherCode: data.current.weather_code,
-      city: decodeURIComponent(city),
+      city: localizedCity ?? decoded,
     };
   } catch {
     return null;

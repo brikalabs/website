@@ -7,5 +7,14 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  // Translation cache. Create via `wrangler kv namespace create I18N_CACHE`
+  // and replace PLACEHOLDER_REPLACE_WITH_REAL_KV_ID with the returned id.
+  "kv_namespaces": [
+    {
+      "binding": "I18N_CACHE",
+      "id": "PLACEHOLDER_REPLACE_WITH_REAL_KV_ID",
+      "preview_id": "PLACEHOLDER_REPLACE_WITH_REAL_KV_ID"
+    }
+  ]
 }

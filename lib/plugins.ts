@@ -98,4 +98,18 @@ export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
       iconUrl: `${npm.unpkgUrl}/${p.name}/icon.svg`,
     }))
     .sort((a, b) => b.downloads - a.downloads);
+
+  if (locale === 'en') return plugins;
+
+  // Translate displayName + description for each plugin in a single batch.
+  const texts: string[] = [];
+  for (const p of plugins) {
+    texts.push(p.displayName, p.description);
+  }
+  const translated = await translateBatch(texts, locale);
+  return plugins.map((p, i) => ({
+    ...p,
+    displayName: translated[i * 2] ?? p.displayName,
+    description: translated[i * 2 + 1] ?? p.description,
+  }));
 }

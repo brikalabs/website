@@ -1,4 +1,6 @@
 import { ArrowRight, Code, Puzzle } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from '@/i18n/routing';
 import { npm, site } from '@/lib/config';
 import { fetchPlugins } from '@/lib/plugins';
 import { PluginGrid } from './plugin-grid';
@@ -6,8 +8,11 @@ import { AnimatedSection } from './ui/animated-section';
 import { Button } from './ui/button';
 import { Cmd, Comment, Flag, Line, Terminal } from './ui/terminal';
 
-export async function Plugins() {
-  const plugins = await fetchPlugins();
+export async function Plugins({ locale }: Readonly<{ locale: Locale }>) {
+  const [plugins, t] = await Promise.all([
+    fetchPlugins(locale),
+    getTranslations({ locale, namespace: 'Plugins' }),
+  ]);
 
   if (plugins.length === 0) return null;
 
@@ -17,14 +22,14 @@ export async function Plugins() {
         <div className="mb-6 flex justify-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
             <Puzzle className="size-3.5" />
-            {plugins.length} plugins available
+            {t('badge', { count: plugins.length })}
           </div>
         </div>
         <h2 className="mb-2 text-center text-3xl font-bold tracking-tight md:text-4xl">
-          Extend with plugins
+          {t('heading')}
         </h2>
         <p className="mb-12 text-center text-muted-foreground">
-          Discover community and official plugins from the npm registry.
+          {t('subheading')}
         </p>
       </div>
       <PluginGrid plugins={plugins} />
@@ -35,13 +40,11 @@ export async function Plugins() {
           <div>
             <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-primary">
               <Code className="size-4" />
-              Developer experience first
+              {t('devExperience')}
             </p>
-            <h3 className="mb-3 text-2xl font-bold tracking-tight">Build your own plugin</h3>
+            <h3 className="mb-3 text-2xl font-bold tracking-tight">{t('buildYourOwn')}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Scaffold a plugin in one command. Define blocks, bricks, and integrations with full
-              TypeScript inference. Ship as an npm package. Brika handles isolation, IPC, and
-              hot-reload.
+              {t('buildYourOwnDescription')}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button
@@ -51,7 +54,7 @@ export async function Plugins() {
                 variant="outline"
                 size="md"
               >
-                Read the docs
+                {t('readDocs')}
                 <ArrowRight className="size-3.5" />
               </Button>
               <Button
@@ -68,12 +71,12 @@ export async function Plugins() {
           </div>
 
           <Terminal>
-            <Comment># scaffold a new plugin</Comment>
+            <Comment>{t('scaffoldComment')}</Comment>
             <Line>
               <Cmd>bun</Cmd> create <Flag>brika</Flag> my-plugin
             </Line>
             <div className="my-2" />
-            <Comment># start developing with hot-reload</Comment>
+            <Comment>{t('devComment')}</Comment>
             <Line>
               <Cmd>cd</Cmd> my-plugin
             </Line>

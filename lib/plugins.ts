@@ -26,12 +26,18 @@ interface PluginPackageJson {
   displayName?: string;
 }
 
+interface PluginLocaleFile {
+  name?: string;
+  description?: string;
+}
+
 interface VerifiedList {
   plugins: {
     name: string;
   }[];
 }
 
+import type { Locale } from '@/i18n/routing';
 import { npm, registry } from '@/lib/config';
 
 /** Revalidate every 10 minutes */
@@ -47,18 +53,16 @@ function fallbackDisplayName(name: string) {
   return name.replace(/^@brika\/(plugin-)?/, '');
 }
 
-export async function fetchPlugins(): Promise<Plugin[]> {
+async function fetchJson<T>(url: string): Promise<T | null> {
+  const res = await fetch(url, { next: { revalidate: REVALIDATE } });
+  if (!res.ok) return null;
+  return (await res.json()) as T;
+}
+
+export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
   const [npmRes, registryRes] = await Promise.all([
-    fetch(npm.searchUrl, {
-      next: {
-        revalidate: REVALIDATE,
-      },
-    }),
-    fetch(registry.verifiedPluginsUrl, {
-      next: {
-        revalidate: REVALIDATE,
-      },
-    }),
+    fetch(npm.searchUrl, { next: { revalidate: REVALIDATE } }),
+    fetch(registry.verifiedPluginsUrl, { next: { revalidate: REVALIDATE } }),
   ]);
 
   const verified = new Set<string>();
@@ -72,46 +76,58 @@ export async function fetchPlugins(): Promise<Plugin[]> {
 
   const packages = objects.map((o) => o.package).filter((p) => !EXCLUDED.has(p.name));
 
-  // Fetch download counts and package.json (for displayName) in parallel
-  const [downloadResults, pkgJsonResults] = await Promise.all([
+  // Plugin packages publish `locales/<locale>/plugin.json` with translated
+  // name + description. Fetch EN always (fallback), plus the request locale
+  // when it's not EN. package.json still drives displayName when no locale
+  // file exists.
+  const [downloadResults, pkgJsonResults, enLocaleResults, localeResults] = await Promise.all([
     Promise.allSettled(
       packages.map((p) =>
-        fetch(`${npm.downloadsUrl}/${p.name}`, {
-          next: {
-            revalidate: REVALIDATE,
-          },
-        })
-          .then((r) =>
-            r.ok
-              ? r.json()
-              : {
-                  downloads: 0,
-                }
-          )
+        fetch(`${npm.downloadsUrl}/${p.name}`, { next: { revalidate: REVALIDATE } })
+          .then((r) => (r.ok ? r.json() : { downloads: 0 }))
           .then((d: NpmDownloads) => d.downloads)
       )
     ),
     Promise.allSettled(
-      packages.map((p) =>
-        fetch(`${npm.unpkgUrl}/${p.name}/package.json`, {
-          next: {
-            revalidate: REVALIDATE,
-          },
-        }).then((r) => (r.ok ? (r.json() as Promise<PluginPackageJson>) : {}))
-      )
+      packages.map((p) => fetchJson<PluginPackageJson>(`${npm.unpkgUrl}/${p.name}/package.json`))
     ),
+    Promise.allSettled(
+      packages.map((p) => fetchJson<PluginLocaleFile>(`${npm.unpkgUrl}/${p.name}/locales/en/plugin.json`))
+    ),
+    locale === 'en'
+      ? Promise.resolve([] as PromiseSettledResult<PluginLocaleFile | null>[])
+      : Promise.allSettled(
+          packages.map((p) =>
+            fetchJson<PluginLocaleFile>(`${npm.unpkgUrl}/${p.name}/locales/${locale}/plugin.json`)
+          )
+        ),
   ]);
+
+  const pick = <T,>(r: PromiseSettledResult<T> | undefined): T | null =>
+    r?.status === 'fulfilled' ? r.value : null;
 
   return packages
     .map((p, i) => {
-      const pkgJson = pkgJsonResults[i]?.status === 'fulfilled' ? pkgJsonResults[i].value : {};
+      const pkgJson = pick(pkgJsonResults[i]) ?? {};
+      const enLocale = pick(enLocaleResults[i]);
+      const localized = locale === 'en' ? null : pick(localeResults[i]);
+
+      // Name precedence: requested locale → EN locale → package.json.displayName → fallback
+      const displayName =
+        localized?.name ??
+        enLocale?.name ??
+        pkgJson.displayName ??
+        fallbackDisplayName(p.name);
+
+      // Description precedence: requested locale → EN locale → npm description
+      const description = localized?.description ?? enLocale?.description ?? p.description;
 
       return {
         name: p.name,
-        displayName: (pkgJson as PluginPackageJson).displayName ?? fallbackDisplayName(p.name),
-        description: p.description,
+        displayName,
+        description,
         version: p.version,
-        downloads: downloadResults[i]?.status === 'fulfilled' ? downloadResults[i].value : 0,
+        downloads: pick(downloadResults[i]) ?? 0,
         verified: verified.has(p.name),
         iconUrl: iconUrl(p.name),
       };

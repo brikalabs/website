@@ -1,8 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 export default function CpuBrick() {
+  const t = useTranslations('Bricks.cpu');
   const [load, setLoad] = useState(47);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function CpuBrick() {
         <div className="text-[clamp(1.25rem,22%,1.5rem)] font-bold leading-tight tracking-tight tabular-nums">
           {rounded}%
         </div>
-        <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">Load average</div>
+        <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">{t('caption')}</div>
       </div>
     </div>
   );

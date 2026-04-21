@@ -1,6 +1,7 @@
 'use client';
 
 import { BadgeCheck, Download, Package } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { npm } from '@/lib/config';
 import type { Plugin } from '@/lib/plugins';
@@ -71,6 +72,7 @@ function PluginCard({
 }: Readonly<{
   plugin: Plugin;
 }>) {
+  const t = useTranslations('Plugins');
   const { ref, onMouseMove, onMouseLeave } = useTilt3D();
 
   return (
@@ -120,7 +122,7 @@ function PluginCard({
           {plugin.downloads > 0 && (
             <span className="flex items-center gap-1">
               <Download className="size-3" />
-              {formatDownloads(plugin.downloads)}/wk
+              {t('perWeek', { count: formatDownloads(plugin.downloads) })}
             </span>
           )}
         </div>

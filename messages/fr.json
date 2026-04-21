@@ -1,0 +1,147 @@
+{
+  "Metadata": {
+    "title": "Brika - Plateforme d'automatisation auto-hébergée",
+    "description": "Créez, exécutez et intégrez vos automatisations localement. Un binaire. Pas de cloud. Contrôle total.",
+    "tagline": "Plateforme d'automatisation auto-hébergée"
+  },
+  "Nav": {
+    "documentation": "Documentation",
+    "github": "GitHub",
+    "getBrika": "Télécharger Brika"
+  },
+  "Hero": {
+    "badge": "Open source \u00b7 Auto-hébergé \u00b7 Local-first",
+    "titleLine1Word1": "Build.",
+    "titleLine1Word2": "Run.",
+    "titleLine1Word3": "Integrate.",
+    "titleLine2": "Keep Automating.",
+    "tagline": "Une plateforme d'automatisation auto-hébergée qui tourne sur votre machine. Un binaire, pas de cloud, contrôle total.",
+    "getStarted": "Commencer",
+    "github": "GitHub"
+  },
+  "QuickStart": {
+    "heading": "Démarrage rapide",
+    "subheading": "Installez Brika en quelques secondes. Une commande, aucune dépendance.",
+    "unstableCanary": "Build canary instable",
+    "unix": {
+      "label": "macOS / Linux",
+      "shortLabel": "Unix",
+      "commentStable": "# Une seule commande. Sans sudo. Sans dépendances.",
+      "commentCanary": "# Installe la dernière version canary.",
+      "note": "macOS (Intel & Apple Silicon) \u00b7 Linux (x64 & arm64)",
+      "output": "\u2713 Brika installé dans ~/.brika/bin/brika"
+    },
+    "windows": {
+      "label": "Windows",
+      "shortLabel": "Win",
+      "commentStable": "# Une ligne PowerShell. Sans droits admin.",
+      "commentCanary": "# Installe la dernière version canary.",
+      "note": "PowerShell 5.1+ \u00b7 Windows 10/11 (x64 & arm64)",
+      "output": "\u2713 Brika installé avec succès"
+    },
+    "docker": {
+      "label": "Docker",
+      "shortLabel": "Docker",
+      "commentStable": "# Pull et run. C\u2019est tout.",
+      "commentCanary": "# Lance la dernière version canary depuis GHCR.",
+      "note": "Docker 20+ \u00b7 Exposé sur le port {port} \u00b7 Fonctionne sur tous les OS",
+      "output": "\u2713 Conteneur démarré sur http://localhost:{port}"
+    }
+  },
+  "Features": {
+    "heading": "Pourquoi Brika",
+    "subheading": "Tout tourne en local. Vous possédez les données, les plugins et l'infrastructure.",
+    "reactiveBlocks": {
+      "title": "Blocs réactifs",
+      "description": "Des blocs de workflow typés, propulsés par Zod et des flux réactifs. Inférence complète, zéro boilerplate.",
+      "tags": ["Zod", "Typé", "Réactif"]
+    },
+    "isolatedPlugins": {
+      "title": "Plugins isolés",
+      "description": "Chaque plugin tourne dans son propre processus. Isolation des crashs, IPC binaire et hot-reload livrés d'office.",
+      "tags": ["Isolation des processus", "IPC", "Hot-reload"]
+    },
+    "visualEditor": {
+      "title": "Éditeur visuel",
+      "description": "Un constructeur d'automatisations en drag-and-drop, directement dans votre navigateur. Connectez les blocs, configurez les flux et voyez les résultats en direct.",
+      "tags": ["Glisser-déposer", "Temps réel", "Navigateur"]
+    }
+  },
+  "Bricks": {
+    "eyebrow": "Briques",
+    "heading": "Votre tableau de bord, vos données",
+    "subheading": "Les briques sont des cartes de tableau de bord en temps réel fournies par les plugins. Météo, minuteurs, contrôles d'appareils, musique. Chaque brique affiche données et actions sur une grille personnalisable.",
+    "bulletDragDrop": "Grille en drag-and-drop",
+    "bulletRealTime": "Données en temps réel issues des plugins",
+    "bulletInteractive": "Actions et contrôles interactifs",
+    "hint": "Essayez de glisser les cartes pour les réorganiser.",
+    "labels": {
+      "weather": "Météo",
+      "energy": "Énergie",
+      "timer": "Minuteur",
+      "cpu": "CPU",
+      "spotify": "À l'écoute",
+      "lights": "Lumières"
+    },
+    "cpu": {
+      "caption": "Charge moyenne"
+    },
+    "energy": {
+      "caption": "Consommation du jour"
+    },
+    "timer": {
+      "caption": "Restant"
+    },
+    "lights": {
+      "on": "Allumé",
+      "off": "Éteint",
+      "room": "Salon",
+      "toggle": "Allumer/Éteindre"
+    },
+    "weather": {
+      "defaultCity": "Genève",
+      "clear": "Ensoleillé",
+      "cloudy": "Nuageux",
+      "foggy": "Brouillard",
+      "drizzle": "Bruine",
+      "rainy": "Pluvieux",
+      "snowy": "Neigeux",
+      "showers": "Averses",
+      "stormy": "Orageux"
+    }
+  },
+  "Plugins": {
+    "badge": "{count, plural, one {# plugin disponible} other {# plugins disponibles}}",
+    "heading": "Étendez avec des plugins",
+    "subheading": "Découvrez les plugins communautaires et officiels depuis le registre npm.",
+    "devExperience": "L'expérience développeur d'abord",
+    "buildYourOwn": "Créez votre propre plugin",
+    "buildYourOwnDescription": "Générez un plugin en une seule commande. Définissez blocs, briques et intégrations avec une inférence TypeScript complète. Publiez-le comme un package npm. Brika gère l'isolation, l'IPC et le hot-reload.",
+    "readDocs": "Lire la documentation",
+    "scaffoldComment": "# générer un nouveau plugin",
+    "devComment": "# démarrer le développement avec hot-reload",
+    "perWeek": "{count}/sem"
+  },
+  "OpenSource": {
+    "badge": "Open Source",
+    "heading": "Conçu en open source",
+    "description": "Brika est open source sous licence MIT. Lisez le code, forkez-le, contribuez. Il est à vous.",
+    "viewOnGithub": "Voir sur GitHub"
+  },
+  "Footer": {
+    "copyright": "\u00a9 {year} Brika Labs",
+    "docs": "Docs",
+    "github": "GitHub",
+    "license": "Licence MIT"
+  },
+  "LocaleToggle": {
+    "switchToEnglish": "Passer en anglais",
+    "switchToFrench": "Passer en français"
+  },
+  "UI": {
+    "copy": "Copier dans le presse-papiers",
+    "copied": "Copié",
+    "switchToLight": "Passer au thème clair",
+    "switchToDark": "Passer au thème sombre"
+  }
+}

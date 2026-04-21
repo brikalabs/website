@@ -1,3 +1,4 @@
+import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import { Bricks } from '@/components/bricks';
@@ -8,6 +9,7 @@ import { Nav } from '@/components/nav';
 import { OpenSource } from '@/components/open-source';
 import { Plugins } from '@/components/plugins';
 import { QuickStart } from '@/components/quick-start';
+import type { Locale } from '@/i18n/routing';
 import { fetchLatestRelease } from '@/lib/github';
 import { fetchWeatherData } from '@/lib/weather';
 
@@ -55,13 +57,21 @@ function Divider() {
   );
 }
 
-export default async function Home() {
-  const [release, h] = await Promise.all([fetchLatestRelease(), headers()]);
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const [release, h] = await Promise.all([fetchLatestRelease(locale), headers()]);
 
   const lat = h.get('x-geo-latitude');
   const lon = h.get('x-geo-longitude');
   const city = h.get('x-geo-city');
-  const weather = lat && lon && city ? await fetchWeatherData(lat, lon, city) : null;
+  const weather =
+    lat && lon && city ? await fetchWeatherData(lat, lon, city) : null;
 
   return (
     <>
@@ -76,7 +86,7 @@ export default async function Home() {
         <Bricks weather={weather} />
         <Divider />
         <Suspense fallback={<PluginsSkeleton />}>
-          <Plugins />
+          <Plugins locale={locale} />
         </Suspense>
         <Divider />
         <OpenSource />

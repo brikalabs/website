@@ -1,11 +1,20 @@
 import { ImageResponse } from 'next/og';
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from '@/i18n/routing';
 import { site } from '@/lib/config';
 
 export const alt = `${site.name} - ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default function OGImage() {
+export default async function OGImage({
+  params,
+}: {
+  params: { locale: Locale };
+}) {
+  const { locale } = params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+
   return new ImageResponse(
     (
       <div
@@ -63,7 +72,7 @@ export default function OGImage() {
             color: '#a1a1aa',
           }}
         >
-          {site.tagline}
+          {t('tagline')}
         </div>
 
         {/* URL */}

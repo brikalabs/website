@@ -1,6 +1,7 @@
 'use client';
 
 import { Gauge, GripVertical, LayoutGrid, Lightbulb, Music, Sun, Timer, Zap } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Layout, LayoutItem } from 'react-grid-layout';
 import { ReactGridLayout } from 'react-grid-layout/legacy';
@@ -22,42 +23,23 @@ const brickContent: Record<string, React.LazyExoticComponent<React.ComponentType
   lights: lazy(() => import('./bricks/lights-brick')),
 };
 
-const brickMeta: Record<
-  string,
-  {
-    icon: React.ComponentType<{
-      className?: string;
-    }>;
-    label: string;
-  }
+type BrickId = 'weather' | 'energy' | 'timer' | 'cpu' | 'spotify' | 'lights';
+
+const brickIcons: Record<
+  BrickId,
+  React.ComponentType<{
+    className?: string;
+  }>
 > = {
-  weather: {
-    icon: Sun,
-    label: 'Weather',
-  },
-  energy: {
-    icon: Zap,
-    label: 'Energy',
-  },
-  timer: {
-    icon: Timer,
-    label: 'Timer',
-  },
-  cpu: {
-    icon: Gauge,
-    label: 'CPU',
-  },
-  spotify: {
-    icon: Music,
-    label: 'Now Playing',
-  },
-  lights: {
-    icon: Lightbulb,
-    label: 'Lights',
-  },
+  weather: Sun,
+  energy: Zap,
+  timer: Timer,
+  cpu: Gauge,
+  spotify: Music,
+  lights: Lightbulb,
 };
 
-const brickIds = ['weather', 'energy', 'timer', 'cpu', 'spotify', 'lights'];
+const brickIds: BrickId[] = ['weather', 'energy', 'timer', 'cpu', 'spotify', 'lights'];
 
 const initialLayout: LayoutItem[] = [
   {
@@ -107,18 +89,18 @@ const initialLayout: LayoutItem[] = [
 function BrickCard({
   id,
 }: Readonly<{
-  id: string;
+  id: BrickId;
 }>) {
+  const t = useTranslations('Bricks.labels');
   const Content = brickContent[id];
-  const meta = brickMeta[id];
-  const Icon = meta.icon;
+  const Icon = brickIcons[id];
 
   return (
     <div className="group relative flex h-full flex-col rounded-xl corner-squircle border border-border bg-surface select-none overflow-hidden transition-shadow hover:shadow-md">
       <div className="flex items-center gap-1.5 px-2.5 pt-2 pb-1.5">
         <Icon className="size-3.5 shrink-0 text-muted-foreground" />
         <span className="flex-1 truncate text-[11px] font-medium text-muted-foreground">
-          {meta.label}
+          {t(id)}
         </span>
         <div className="drag-handle cursor-grab rounded p-0.5 transition-colors hover:bg-muted active:cursor-grabbing">
           <GripVertical className="size-3 text-muted-foreground/40 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -190,6 +172,7 @@ export function Bricks({
 }: Readonly<{
   weather?: WeatherData | null;
 }>) {
+  const t = useTranslations('Bricks');
   const weatherValue = useMemo(() => weather ?? null, [weather]);
 
   return (
@@ -200,31 +183,24 @@ export function Bricks({
             <div>
               <div className="mb-4 flex items-center gap-2">
                 <LayoutGrid className="size-5 text-primary" />
-                <span className="text-sm font-semibold text-primary">Bricks</span>
+                <span className="text-sm font-semibold text-primary">{t('eyebrow')}</span>
               </div>
               <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-                Your dashboard, your data
+                {t('heading')}
               </h2>
-              <p className="leading-relaxed text-muted-foreground">
-                Bricks are live dashboard cards that plugins provide. Weather, timers, device
-                controls, music. Each brick displays real-time data and actions on a customizable
-                grid.
-              </p>
+              <p className="leading-relaxed text-muted-foreground">{t('subheading')}</p>
               <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-primary" /> Drag-and-drop grid layout
+                  <span className="size-1.5 rounded-full bg-primary" /> {t('bulletDragDrop')}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-primary" /> Real-time data from plugins
+                  <span className="size-1.5 rounded-full bg-primary" /> {t('bulletRealTime')}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-primary" /> Interactive actions and
-                  controls
+                  <span className="size-1.5 rounded-full bg-primary" /> {t('bulletInteractive')}
                 </li>
               </ul>
-              <p className="mt-4 text-xs text-muted-foreground italic">
-                Try dragging the cards to rearrange them.
-              </p>
+              <p className="mt-4 text-xs text-muted-foreground italic">{t('hint')}</p>
             </div>
 
             <DraggableGrid />

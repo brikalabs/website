@@ -38,7 +38,7 @@ export default function LightsBrick() {
           <div
             className="absolute top-[10%] aspect-square h-[80%] rounded-full bg-white shadow-sm transition-transform duration-300"
             style={{
-              transform: on ? 'translateX(calc(100% - 2px))' : 'translateX(2px)',
+              transform: on ? 'translateX(calc(125% - 2px))' : 'translateX(2px)',
             }}
           />
         </button>

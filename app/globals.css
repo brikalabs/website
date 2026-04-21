@@ -64,6 +64,10 @@
 
   html {
     scroll-behavior: smooth;
+    /* Reserve scrollbar space always so the view-transition pseudo's
+       coordinate system matches getBoundingClientRect (both exclude the
+       scrollbar area). Without this, the circle-wipe center lands off. */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -216,12 +220,15 @@
   }
 }
 
+/* With 2N cards as direct flex siblings (uniform gap), the track is
+   `2N*card + (2N-1)*gap` wide and we need to advance by `N*(card+gap)` for a
+   seamless wrap. That's exactly -50% minus half a gap. */
 @keyframes marquee-scroll {
   from {
     translate: 0 0;
   }
   to {
-    translate: -50% 0;
+    translate: calc(-50% - var(--marquee-gap) / 2) 0;
   }
 }
 
@@ -264,6 +271,25 @@
     opacity: 0;
     transform: translateY(-10%) scale(0.98);
   }
+}
+
+/* Registered so each tilt-card custom property can transition on its own
+   timeline: --rx/--ry smooth-return on leave but snap during hover for instant
+   cursor tracking, while --tz always eases so the hover "pop" is smooth. */
+@property --rx {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --ry {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tz {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
 }
 
 /* ── Components ── */
@@ -361,19 +387,29 @@
   }
 
   /* ── Shared tilt-card ── */
+  /* One uniform transition across hover/idle — switching between 0s and 0.5s
+     curves at hover toggle caused visible snaps. A short linear tween on
+     --rx/--ry tracks the cursor with ~120ms of smoothing that eats pointer
+     jitter without feeling laggy, and returns smoothly on leave. */
   .tilt-card {
     --mx: 0.5;
     --my: 0.5;
     --rx: 0;
     --ry: 0;
-    transform: perspective(800px) rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
+    --tz: 0px;
+    transform: perspective(800px) rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg))
+      translateZ(var(--tz));
     transition:
-      transform 0.4s cubic-bezier(0.03, 0.98, 0.52, 0.99),
+      --rx 0.12s linear,
+      --ry 0.12s linear,
+      --tz 0.3s cubic-bezier(0.16, 1, 0.3, 1),
       border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .tilt-card:hover {
+    --tz: 14px;
+    z-index: 1;
     border-color: color-mix(in oklch, var(--card-color, var(--primary)) 40%, transparent);
     box-shadow:
       0 0 40px -8px color-mix(in oklch, var(--card-color, var(--primary)) 30%, transparent),
@@ -416,13 +452,67 @@
   }
 
   /* ── Plugin marquee ── */
+  .marquee-container {
+    --marquee-gap: 1.25rem;
+    --marquee-fade-width: 12rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-block: 1.5rem;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Opaque page-color gradients painted over card edges — no mask, no compositor
+     quirks. z-index above rows (which are z:auto) ensures they cover any tilted
+     card poking into the fade zone. */
+  .marquee-container::before,
+  .marquee-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--marquee-fade-width);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .marquee-container::before {
+    left: 0;
+    background: linear-gradient(to right, var(--background), transparent);
+  }
+
+  .marquee-container::after {
+    right: 0;
+    background: linear-gradient(to left, var(--background), transparent);
+  }
+
+  .marquee-row {
+    overflow: visible;
+  }
+
   .marquee-track {
+    display: flex;
+    width: max-content;
+    gap: var(--marquee-gap);
     animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
     will-change: transform;
   }
 
+  /* `display: contents` dissolves the wrapper — cards become direct flex
+     children of .marquee-track so the single gap applies uniformly to all 2N
+     siblings (required for the seamless loop math). */
+  .marquee-set {
+    display: contents;
+  }
+
   .marquee-reverse {
     animation-direction: reverse;
+  }
+
+  .marquee-row:hover .marquee-track {
+    animation-play-state: paused;
   }
 
   /* ── Button border glow ── */
@@ -520,11 +610,17 @@
   }
 }
 
-/* ── View transition (theme circle wipe) ── */
+
+/* ── View transition (theme circle wipe) — MDN reference pattern ── */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  display: block;
 }
 
 /* ── Reduced motion ── */

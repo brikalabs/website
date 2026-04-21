@@ -142,7 +142,14 @@ export function QuickStart() {
                   ))}
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="flex items-center rounded-full border border-code-border bg-code-bg p-0.5">
+                  <div className="relative flex items-center rounded-full border border-code-border bg-code-bg p-0.5">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        'pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-primary/15 transition-transform duration-200 ease-out',
+                        channel === 'canary' && 'translate-x-full',
+                      )}
+                    />
                     <button
                       type="button"
                       onClick={() => setChannel('stable')}

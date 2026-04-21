@@ -2,14 +2,14 @@
 export function withCircleWipe(apply: () => void, origin?: Element | null) {
   if (
     !('startViewTransition' in document) ||
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
   ) {
     apply();
     return;
   }
 
-  let x = window.innerWidth / 2;
-  let y = window.innerHeight / 2;
+  let x = innerWidth / 2;
+  let y = innerHeight / 2;
   if (origin) {
     const r = origin.getBoundingClientRect();
     x = r.left + r.width / 2;

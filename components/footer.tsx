@@ -1,7 +1,10 @@
+import { getTranslations } from 'next-intl/server';
 import { github, site } from '@/lib/config';
 import { BrikaLogo } from './ui/brika-logo';
 
-export function Footer() {
+export async function Footer() {
+  const t = await getTranslations('Footer');
+
   return (
     <footer className="py-8">
       <div
@@ -11,7 +14,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <BrikaLogo className="size-5" />
-          <span>&copy; {new Date().getFullYear()} Brika Labs</span>
+          <span>{t('copyright', { year: new Date().getFullYear() })}</span>
         </div>
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
           <a
@@ -20,7 +23,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="transition-colors hover:text-foreground"
           >
-            Docs
+            {t('docs')}
           </a>
           <a
             href={github.url}
@@ -28,7 +31,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="transition-colors hover:text-foreground"
           >
-            GitHub
+            {t('github')}
           </a>
           <a
             href={github.licenseUrl}
@@ -36,7 +39,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="transition-colors hover:text-foreground"
           >
-            MIT License
+            {t('license')}
           </a>
         </div>
       </div>

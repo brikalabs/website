@@ -1,4 +1,5 @@
 import { ArrowDown, Sparkles, Tag } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { SiGithub } from 'react-icons/si';
 import { github } from '@/lib/config';
 import { BrikaLogo } from './ui/brika-logo';
@@ -11,7 +12,9 @@ interface HeroProps {
   } | null;
 }
 
-export function Hero({ release }: Readonly<HeroProps>) {
+export async function Hero({ release }: Readonly<HeroProps>) {
+  const t = await getTranslations('Hero');
+
   return (
     <section className="hero-parallax relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6">
       {/* Aurora blobs */}
@@ -58,7 +61,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
         >
           <div className="badge-glow inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="size-3.5 shrink-0" />
-            <span>Open source &middot; Self-hosted &middot; Local-first</span>
+            <span>{t('badge')}</span>
           </div>
           {release && (
             <a
@@ -81,7 +84,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
                 animationDelay: '350ms',
               }}
             >
-              Build.
+              {t('titleLine1Word1')}
             </span>{' '}
             <span
               className="text-reveal-word"
@@ -89,7 +92,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
                 animationDelay: '470ms',
               }}
             >
-              Run.
+              {t('titleLine1Word2')}
             </span>{' '}
             <span
               className="text-reveal-word"
@@ -97,7 +100,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
                 animationDelay: '590ms',
               }}
             >
-              Integrate.
+              {t('titleLine1Word3')}
             </span>
           </span>
           <span className="block overflow-hidden pb-1">
@@ -107,7 +110,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
                 animationDelay: '770ms',
               }}
             >
-              Keep Automating.
+              {t('titleLine2')}
             </span>
           </span>
         </h1>
@@ -118,8 +121,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
             animationDelay: '950ms',
           }}
         >
-          A self-hosted automation hub that runs on your machine. One binary, no cloud, full
-          control.
+          {t('tagline')}
         </p>
 
         {/* CTAs */}
@@ -130,7 +132,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
           }}
         >
           <Button href="#install" variant="filled" size="lg" className="group">
-            Get started
+            {t('getStarted')}
             <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
           </Button>
           <Button
@@ -141,7 +143,7 @@ export function Hero({ release }: Readonly<HeroProps>) {
             size="lg"
           >
             <SiGithub className="size-4" />
-            GitHub
+            {t('github')}
           </Button>
         </div>
       </div>

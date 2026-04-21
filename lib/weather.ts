@@ -15,8 +15,18 @@ export type WeatherIcon =
   | 'snowflake'
   | 'cloud-lightning';
 
+export type WeatherKey =
+  | 'clear'
+  | 'cloudy'
+  | 'foggy'
+  | 'drizzle'
+  | 'rainy'
+  | 'snowy'
+  | 'showers'
+  | 'stormy';
+
 export interface WeatherTheme {
-  label: string;
+  key: WeatherKey;
   icon: WeatherIcon;
   glow: string;
   bg: string;
@@ -26,55 +36,55 @@ export interface WeatherTheme {
 export function weatherTheme(code: number): WeatherTheme {
   if (code === 0)
     return {
-      label: 'Clear',
+      key: 'clear',
       icon: 'sun',
       glow: 'oklch(0.85 0.15 75)',
       bg: 'oklch(0.85 0.15 75 / 0.08)',
     };
   if (code <= 3)
     return {
-      label: 'Cloudy',
+      key: 'cloudy',
       icon: 'cloud',
       glow: 'oklch(0.7 0.03 250)',
       bg: 'oklch(0.7 0.03 250 / 0.08)',
     };
   if (code <= 48)
     return {
-      label: 'Foggy',
+      key: 'foggy',
       icon: 'cloud-fog',
       glow: 'oklch(0.75 0.02 250)',
       bg: 'oklch(0.75 0.02 250 / 0.06)',
     };
   if (code <= 55)
     return {
-      label: 'Drizzle',
+      key: 'drizzle',
       icon: 'cloud-drizzle',
       glow: 'oklch(0.7 0.12 230)',
       bg: 'oklch(0.7 0.12 230 / 0.08)',
     };
   if (code <= 65)
     return {
-      label: 'Rainy',
+      key: 'rainy',
       icon: 'cloud-rain',
       glow: 'oklch(0.6 0.15 250)',
       bg: 'oklch(0.6 0.15 250 / 0.1)',
     };
   if (code <= 77)
     return {
-      label: 'Snowy',
+      key: 'snowy',
       icon: 'snowflake',
       glow: 'oklch(0.9 0.05 230)',
       bg: 'oklch(0.9 0.05 230 / 0.1)',
     };
   if (code <= 82)
     return {
-      label: 'Showers',
+      key: 'showers',
       icon: 'cloud-rain',
       glow: 'oklch(0.65 0.14 240)',
       bg: 'oklch(0.65 0.14 240 / 0.1)',
     };
   return {
-    label: 'Stormy',
+    key: 'stormy',
     icon: 'cloud-lightning',
     glow: 'oklch(0.55 0.18 290)',
     bg: 'oklch(0.55 0.18 290 / 0.12)',

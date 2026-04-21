@@ -1,10 +1,13 @@
 import { Heart } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { SiGithub } from 'react-icons/si';
 import { github } from '@/lib/config';
 import { AnimatedSection } from './ui/animated-section';
 import { Button } from './ui/button';
 
-export function OpenSource() {
+export async function OpenSource() {
+  const t = await getTranslations('OpenSource');
+
   return (
     <AnimatedSection className="py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
@@ -30,15 +33,14 @@ export function OpenSource() {
           <div className="relative">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
               <Heart className="size-3.5" />
-              Open Source
+              {t('badge')}
             </div>
 
             <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-              Built in the open
+              {t('heading')}
             </h2>
             <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
-              Brika is MIT-licensed and open source. Read the code, fork it, contribute. It&apos;s
-              yours.
+              {t('description')}
             </p>
 
             <Button
@@ -49,7 +51,7 @@ export function OpenSource() {
               size="lg"
             >
               <SiGithub className="size-4" />
-              View on GitHub
+              {t('viewOnGithub')}
             </Button>
           </div>
         </div>

@@ -1,0 +1,147 @@
+{
+  "Metadata": {
+    "title": "Brika - Self-hosted Automation Hub",
+    "description": "Build, run, and integrate automations locally. One binary. No cloud. Full control.",
+    "tagline": "Self-hosted Automation Hub"
+  },
+  "Nav": {
+    "documentation": "Documentation",
+    "github": "GitHub",
+    "getBrika": "Get Brika"
+  },
+  "Hero": {
+    "badge": "Open source \u00b7 Self-hosted \u00b7 Local-first",
+    "titleLine1Word1": "Build.",
+    "titleLine1Word2": "Run.",
+    "titleLine1Word3": "Integrate.",
+    "titleLine2": "Keep Automating.",
+    "tagline": "A self-hosted automation hub that runs on your machine. One binary, no cloud, full control.",
+    "getStarted": "Get started",
+    "github": "GitHub"
+  },
+  "QuickStart": {
+    "heading": "Quick Start",
+    "subheading": "Install Brika in seconds. One command, no dependencies.",
+    "unstableCanary": "Unstable canary build",
+    "unix": {
+      "label": "macOS / Linux",
+      "shortLabel": "Unix",
+      "commentStable": "# One command. No sudo. No dependencies.",
+      "commentCanary": "# Install latest canary build.",
+      "note": "macOS (Intel & Apple Silicon) \u00b7 Linux (x64 & arm64)",
+      "output": "\u2713 Brika installed to ~/.brika/bin/brika"
+    },
+    "windows": {
+      "label": "Windows",
+      "shortLabel": "Win",
+      "commentStable": "# PowerShell one-liner. No admin required.",
+      "commentCanary": "# Install latest canary build.",
+      "note": "PowerShell 5.1+ \u00b7 Windows 10/11 (x64 & arm64)",
+      "output": "\u2713 Brika installed successfully"
+    },
+    "docker": {
+      "label": "Docker",
+      "shortLabel": "Docker",
+      "commentStable": "# Pull and run. That\u2019s it.",
+      "commentCanary": "# Run latest canary build from GHCR.",
+      "note": "Docker 20+ \u00b7 Exposes on port {port} \u00b7 Works on any OS",
+      "output": "\u2713 Container started on http://localhost:{port}"
+    }
+  },
+  "Features": {
+    "heading": "Why Brika",
+    "subheading": "Everything runs locally. You own the data, the plugins, the infra.",
+    "reactiveBlocks": {
+      "title": "Reactive blocks",
+      "description": "Type-safe workflow blocks powered by Zod and reactive streams. Full inference, zero boilerplate.",
+      "tags": ["Zod", "Type-safe", "Reactive"]
+    },
+    "isolatedPlugins": {
+      "title": "Isolated plugins",
+      "description": "Every plugin runs in its own process. Crash isolation, binary IPC, hot-reload out of the box.",
+      "tags": ["Process isolation", "IPC", "Hot-reload"]
+    },
+    "visualEditor": {
+      "title": "Visual editor",
+      "description": "Drag-and-drop automation builder in your browser. Connect blocks, configure flows, see results live.",
+      "tags": ["Drag & drop", "Real-time", "Browser"]
+    }
+  },
+  "Bricks": {
+    "eyebrow": "Bricks",
+    "heading": "Your dashboard, your data",
+    "subheading": "Bricks are live dashboard cards that plugins provide. Weather, timers, device controls, music. Each brick displays real-time data and actions on a customizable grid.",
+    "bulletDragDrop": "Drag-and-drop grid layout",
+    "bulletRealTime": "Real-time data from plugins",
+    "bulletInteractive": "Interactive actions and controls",
+    "hint": "Try dragging the cards to rearrange them.",
+    "labels": {
+      "weather": "Weather",
+      "energy": "Energy",
+      "timer": "Timer",
+      "cpu": "CPU",
+      "spotify": "Now Playing",
+      "lights": "Lights"
+    },
+    "cpu": {
+      "caption": "Load average"
+    },
+    "energy": {
+      "caption": "Today\u2019s usage"
+    },
+    "timer": {
+      "caption": "Remaining"
+    },
+    "lights": {
+      "on": "On",
+      "off": "Off",
+      "room": "Living room",
+      "toggle": "Toggle lights"
+    },
+    "weather": {
+      "defaultCity": "Geneva",
+      "clear": "Clear",
+      "cloudy": "Cloudy",
+      "foggy": "Foggy",
+      "drizzle": "Drizzle",
+      "rainy": "Rainy",
+      "snowy": "Snowy",
+      "showers": "Showers",
+      "stormy": "Stormy"
+    }
+  },
+  "Plugins": {
+    "badge": "{count, plural, one {# plugin available} other {# plugins available}}",
+    "heading": "Extend with plugins",
+    "subheading": "Discover community and official plugins from the npm registry.",
+    "devExperience": "Developer experience first",
+    "buildYourOwn": "Build your own plugin",
+    "buildYourOwnDescription": "Scaffold a plugin in one command. Define blocks, bricks, and integrations with full TypeScript inference. Ship as an npm package. Brika handles isolation, IPC, and hot-reload.",
+    "readDocs": "Read the docs",
+    "scaffoldComment": "# scaffold a new plugin",
+    "devComment": "# start developing with hot-reload",
+    "perWeek": "{count}/wk"
+  },
+  "OpenSource": {
+    "badge": "Open Source",
+    "heading": "Built in the open",
+    "description": "Brika is MIT-licensed and open source. Read the code, fork it, contribute. It\u2019s yours.",
+    "viewOnGithub": "View on GitHub"
+  },
+  "Footer": {
+    "copyright": "\u00a9 {year} Brika Labs",
+    "docs": "Docs",
+    "github": "GitHub",
+    "license": "MIT License"
+  },
+  "LocaleToggle": {
+    "switchToEnglish": "Switch to English",
+    "switchToFrench": "Switch to French"
+  },
+  "UI": {
+    "copy": "Copy to clipboard",
+    "copied": "Copied",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  }
+}

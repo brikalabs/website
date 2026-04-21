@@ -1,8 +1,11 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 const bars = [0.4, 0.7, 0.55, 0.85, 0.6, 0.45, 0.75];
 
 export default function EnergyBrick() {
+  const t = useTranslations('Bricks.energy');
   return (
     <div className="relative flex h-full flex-col overflow-hidden px-3 pb-3">
       <div className="flex min-h-0 flex-1 items-end gap-0.75 pb-[8%]">
@@ -25,7 +28,7 @@ export default function EnergyBrick() {
         3.2 kWh
       </div>
       <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">
-        Today&apos;s usage
+        {t('caption')}
       </div>
     </div>
   );

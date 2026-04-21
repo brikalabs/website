@@ -1,8 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 export default function LightsBrick() {
+  const t = useTranslations('Bricks.lights');
   const [on, setOn] = useState(true);
 
   return (
@@ -20,9 +22,9 @@ export default function LightsBrick() {
       <div className="flex items-end justify-between">
         <div>
           <div className="text-[clamp(0.875rem,15%,1.125rem)] font-bold leading-tight tracking-tight">
-            {on ? 'On' : 'Off'}
+            {on ? t('on') : t('off')}
           </div>
-          <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">Living room</div>
+          <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">{t('room')}</div>
         </div>
         <button
           type="button"
@@ -31,7 +33,7 @@ export default function LightsBrick() {
           style={{
             background: on ? 'var(--primary)' : 'var(--muted)',
           }}
-          aria-label="Toggle lights"
+          aria-label={t('toggle')}
         >
           <div
             className="absolute top-[10%] h-[80%] aspect-square rounded-full bg-white shadow-sm transition-transform duration-300"

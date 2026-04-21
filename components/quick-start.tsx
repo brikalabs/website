@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { type ComponentType, type ReactNode, useEffect, useState } from 'react';
 import { FaApple, FaDocker, FaWindows } from 'react-icons/fa';
 import { docker, site } from '@/lib/config';
@@ -11,35 +12,25 @@ import { Cmd, Comment, Cursor, Flag, Line, Terminal } from './ui/terminal';
 type Tab = 'unix' | 'windows' | 'docker';
 type Channel = 'stable' | 'canary';
 
-function getTabs(channel: Channel) {
+type TabConfig = {
+  value: Tab;
+  icon: ComponentType<{ className?: string }>;
+  command: string;
+  body: ReactNode;
+};
+
+function getTabs(channel: Channel): TabConfig[] {
   const isCanary = channel === 'canary';
   const dockerTag = isCanary ? 'canary' : 'latest';
   const dockerImage = `${docker.image}:${dockerTag}`;
 
-  const tabs: {
-    value: Tab;
-    label: string;
-    shortLabel: string;
-    icon: ComponentType<{ className?: string }>;
-    command: string;
-    comment: string;
-    note: string;
-    body: ReactNode;
-    output: string;
-  }[] = [
+  return [
     {
       value: 'unix',
-      label: 'macOS / Linux',
-      shortLabel: 'Unix',
       icon: FaApple,
       command: isCanary
         ? `curl -fsSL ${site.url}/install.sh | bash -s canary`
         : `curl -fsSL ${site.url}/install.sh | bash`,
-      comment: isCanary
-        ? '# Install latest canary build.'
-        : '# One command. No sudo. No dependencies.',
-      note: 'macOS (Intel & Apple Silicon) \u00b7 Linux (x64 & arm64)',
-      output: '\u2713 Brika installed to ~/.brika/bin/brika',
       body: isCanary ? (
         <>
           <Cmd>curl</Cmd> <Flag>-fsSL</Flag> <span>{site.url}/install.sh</span>{' '}
@@ -54,17 +45,10 @@ function getTabs(channel: Channel) {
     },
     {
       value: 'windows',
-      label: 'Windows',
-      shortLabel: 'Win',
       icon: FaWindows,
       command: isCanary
         ? `irm ${site.url}/install.ps1 -out i.ps1; ./i.ps1 canary`
         : `iwr -useb ${site.url}/install.ps1 | iex`,
-      comment: isCanary
-        ? '# Install latest canary build.'
-        : '# PowerShell one-liner. No admin required.',
-      note: 'PowerShell 5.1+ \u00b7 Windows 10/11 (x64 & arm64)',
-      output: '\u2713 Brika installed successfully',
       body: isCanary ? (
         <>
           <Cmd>irm</Cmd> <span>{site.url}/install.ps1</span> <Flag>-out</Flag>{' '}
@@ -79,15 +63,8 @@ function getTabs(channel: Channel) {
     },
     {
       value: 'docker',
-      label: 'Docker',
-      shortLabel: 'Docker',
       icon: FaDocker,
       command: `docker run -d -p ${docker.port}:${docker.port} --name brika ${dockerImage}`,
-      comment: isCanary
-        ? '# Run latest canary build from GHCR.'
-        : '# Pull and run. That\u2019s it.',
-      note: `Docker 20+ \u00b7 Exposes on port ${docker.port} \u00b7 Works on any OS`,
-      output: `\u2713 Container started on http://localhost:${docker.port}`,
       body: (
         <>
           <Cmd>docker</Cmd> <Flag>run -d -p</Flag>{' '}
@@ -99,8 +76,6 @@ function getTabs(channel: Channel) {
       ),
     },
   ];
-
-  return tabs;
 }
 
 const prompts: Record<Tab, string> = {
@@ -110,6 +85,7 @@ const prompts: Record<Tab, string> = {
 };
 
 export function QuickStart() {
+  const t = useTranslations('QuickStart');
   const [active, setActive] = useState<Tab>('unix');
   const [channel, setChannel] = useState<Channel>('stable');
 
@@ -120,16 +96,26 @@ export function QuickStart() {
   }, []);
 
   const tabs = getTabs(channel);
-  const current = tabs.find((t) => t.value === active) ?? tabs[0];
+  const current = tabs.find((tab) => tab.value === active) ?? tabs[0];
+  const commentKey = channel === 'canary' ? 'commentCanary' : 'commentStable';
+  const currentNote =
+    current.value === 'docker'
+      ? t('docker.note', { port: docker.port })
+      : t(`${current.value}.note`);
+  const currentOutput =
+    current.value === 'docker'
+      ? t('docker.output', { port: docker.port })
+      : t(`${current.value}.output`);
+  const currentComment = t(`${current.value}.${commentKey}`);
 
   return (
     <AnimatedSection id="install" className="py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <h2 className="mb-2 text-center text-3xl font-bold tracking-tight md:text-4xl">
-          Quick Start
+          {t('heading')}
         </h2>
         <p className="mb-10 text-center text-muted-foreground">
-          Install Brika in seconds. One command, no dependencies.
+          {t('subheading')}
         </p>
 
         <div className="mx-auto max-w-2xl">
@@ -137,23 +123,27 @@ export function QuickStart() {
             actions={
               <>
                 <div className="flex items-center gap-1" role="tablist">
-                  {tabs.map((t) => (
+                  {tabs.map((tab) => (
                     <button
-                      key={t.value}
+                      key={tab.value}
                       type="button"
                       role="tab"
-                      aria-selected={active === t.value}
-                      onClick={() => setActive(t.value)}
+                      aria-selected={active === tab.value}
+                      onClick={() => setActive(tab.value)}
                       className={cn(
                         'flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium transition-colors cursor-pointer sm:gap-1.5 sm:px-3',
-                        active === t.value
+                        active === tab.value
                           ? 'bg-primary/15 text-primary'
                           : 'text-muted-foreground hover:text-foreground',
                       )}
                     >
-                      <t.icon className="size-3.5" />
-                      <span className="hidden sm:inline">{t.label}</span>
-                      <span className="sm:hidden">{t.shortLabel}</span>
+                      <tab.icon className="size-3.5" />
+                      <span className="hidden sm:inline">
+                        {t(`${tab.value}.label`)}
+                      </span>
+                      <span className="sm:hidden">
+                        {t(`${tab.value}.shortLabel`)}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -191,21 +181,21 @@ export function QuickStart() {
               </>
             }
           >
-            <Comment>{current.comment}</Comment>
+            <Comment>{currentComment}</Comment>
             <div className="h-3" />
             <Line prompt={prompts[active]}>
               <span className="break-all">{current.body}</span>
               <Cursor />
             </Line>
             <div className="h-2" />
-            <div className="select-none text-xs text-primary/70">{current.output}</div>
+            <div className="select-none text-xs text-primary/70">{currentOutput}</div>
           </Terminal>
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
             {channel === 'canary' && (
-              <span className="text-warning">Unstable canary build &middot; </span>
+              <span className="text-warning">{t('unstableCanary')} &middot; </span>
             )}
-            {current.note}
+            {currentNote}
           </p>
         </div>
       </div>

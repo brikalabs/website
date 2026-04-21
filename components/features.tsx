@@ -1,42 +1,32 @@
 'use client';
 
 import { Blocks, Cable, LayoutDashboard, type LucideIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useTilt3D } from '@/lib/use-tilt-3d';
 import { cn } from '@/lib/utils';
 import { useOnceVisible } from './ui/animated-section';
 
 interface Feature {
   icon: LucideIcon;
-  title: string;
-  description: string;
+  key: 'reactiveBlocks' | 'isolatedPlugins' | 'visualEditor';
   color: string;
-  tags: string[];
 }
 
 const features: Feature[] = [
   {
     icon: Blocks,
-    title: 'Reactive blocks',
-    description:
-      'Type-safe workflow blocks powered by Zod and reactive streams. Full inference, zero boilerplate.',
+    key: 'reactiveBlocks',
     color: 'oklch(0.72 0.15 145)',
-    tags: ['Zod', 'Type-safe', 'Reactive'],
   },
   {
     icon: Cable,
-    title: 'Isolated plugins',
-    description:
-      'Every plugin runs in its own process. Crash isolation, binary IPC, hot-reload out of the box.',
+    key: 'isolatedPlugins',
     color: 'oklch(0.7 0.16 265)',
-    tags: ['Process isolation', 'IPC', 'Hot-reload'],
   },
   {
     icon: LayoutDashboard,
-    title: 'Visual editor',
-    description:
-      'Drag-and-drop automation builder in your browser. Connect blocks, configure flows, see results live.',
+    key: 'visualEditor',
     color: 'oklch(0.72 0.18 45)',
-    tags: ['Drag & drop', 'Real-time', 'Browser'],
   },
 ];
 
@@ -49,6 +39,7 @@ function FeatureCard({
   visible: boolean;
   index: number;
 }>) {
+  const t = useTranslations('Features');
   const { ref, onMouseMove, onMouseLeave } = useTilt3D(8);
 
   return (
@@ -103,12 +94,14 @@ function FeatureCard({
           }}
         />
       </div>
-      <h3 className="relative mb-1.5 text-lg font-semibold">{feature.title}</h3>
+      <h3 className="relative mb-1.5 text-lg font-semibold">
+        {t(`${feature.key}.title`)}
+      </h3>
       <p className="relative text-sm leading-relaxed text-muted-foreground">
-        {feature.description}
+        {t(`${feature.key}.description`)}
       </p>
       <div className="relative mt-4 flex flex-wrap gap-1.5">
-        {feature.tags.map((tag) => (
+        {t.raw(`${feature.key}.tags`).map((tag: string) => (
           <span
             key={tag}
             className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
@@ -122,6 +115,7 @@ function FeatureCard({
 }
 
 export function Features() {
+  const t = useTranslations('Features');
   const { ref, visible } = useOnceVisible();
 
   return (
@@ -134,7 +128,7 @@ export function Features() {
             visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
           )}
         >
-          Why Brika
+          {t('heading')}
         </h2>
         <p
           className={cn(
@@ -146,12 +140,12 @@ export function Features() {
             transitionDelay: visible ? '100ms' : '0ms',
           }}
         >
-          Everything runs locally. You own the data, the plugins, the infra.
+          {t('subheading')}
         </p>
 
         <div className="grid gap-6 md:grid-cols-3">
           {features.map((f, i) => (
-            <FeatureCard key={f.title} feature={f} visible={visible} index={i} />
+            <FeatureCard key={f.key} feature={f} visible={visible} index={i} />
           ))}
         </div>
       </div>

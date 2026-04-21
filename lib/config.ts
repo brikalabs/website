@@ -2,8 +2,6 @@
 
 export const site = {
   name: 'Brika',
-  tagline: 'Self-hosted Automation Hub',
-  description: 'Build, run, and integrate automations locally. One binary. No cloud. Full control.',
   url: 'https://brika.dev',
   docsUrl: 'https://docs.brika.dev/',
 } as const;
@@ -37,3 +35,9 @@ export const npm = {
 export const registry = {
   verifiedPluginsUrl: 'https://registry.brika.dev/verified-plugins.json',
 } as const;
+
+/** Plugins hidden from the public landing page (demos, examples, internal). */
+export const excludedPlugins = new Set<string>([
+  '@brika/plugin-example-echo',
+  '@brika/plugin-demo-config',
+]);

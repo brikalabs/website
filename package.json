@@ -14,9 +14,8 @@
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "check": "biome check . && tsgo --noEmit",
-    "fix": "biome check --write .",
-    "knip": "knip"
+    "check": "biome check . && tsgo --noEmit && knip",
+    "fix": "biome check --write ."
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.1",

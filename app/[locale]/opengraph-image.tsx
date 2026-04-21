@@ -8,8 +8,8 @@ export const alt = `${site.name} - ${enMessages.Metadata.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default async function OGImage({ params }: { params: { locale: Locale } }) {
-  const { locale } = params;
+export default async function OGImage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Metadata' });
 
   return new ImageResponse(

@@ -40,11 +40,11 @@ function FeatureCard({
   index: number;
 }>) {
   const t = useTranslations('Features');
-  const { ref, onMouseMove, onMouseLeave } = useTilt3D(8);
+  const { ref, onMouseEnter, onMouseMove, onMouseLeave } = useTilt3D<HTMLDivElement>(8);
 
   return (
     <div
-      ref={ref as React.Ref<HTMLDivElement>}
+      ref={ref}
       className={cn(
         'tilt-card feature-card group corner-squircle relative overflow-hidden rounded-2xl border border-border bg-surface p-6 will-change-transform',
         visible ? 'animate-[card-enter_0.5s_ease-out_backwards]' : 'opacity-0'
@@ -57,6 +57,7 @@ function FeatureCard({
             } as React.CSSProperties)
           : undefined
       }
+      onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >

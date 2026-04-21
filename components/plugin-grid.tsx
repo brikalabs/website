@@ -2,13 +2,38 @@
 
 import { BadgeCheck, Download, Package } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { npm } from '@/lib/config';
 import type { Plugin } from '@/lib/plugins';
 import { useTilt3D } from '@/lib/use-tilt-3d';
 import { cn } from '@/lib/utils';
 
-const MIN_CARDS = 10;
+/** Card layout width: w-64 (256px) + --marquee-gap (1.25rem = 20px). */
+const CARD_UNIT_PX = 276;
+/** SSR default + floor. Covers ~3.3K viewports without a loop gap. */
+const MIN_CARDS = 12;
+
+/**
+ * Enough cards per track half to cover the viewport. For a seamless loop,
+ * N*(cardW+gap) must exceed viewport width — otherwise when the track
+ * translates by -N*(cardW+gap) the viewport reveals past the duplicate set,
+ * producing a visible gap (visible on ultrawide monitors).
+ */
+function useAdaptiveCardCount() {
+  const [count, setCount] = useState(MIN_CARDS);
+
+  useEffect(() => {
+    const update = () => {
+      const needed = Math.ceil(window.innerWidth / CARD_UNIT_PX) + 2;
+      setCount(Math.max(MIN_CARDS, needed));
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  return count;
+}
 
 function formatDownloads(n: number) {
   if (n >= 1000) {
@@ -28,21 +53,6 @@ function repeat<T>(items: T[], min: number): T[] {
   return out;
 }
 
-/** Deterministic interleave: pick from alternating ends for visual variety. */
-function interleave<T>(items: T[]): T[] {
-  const sorted = [...items];
-  const result: T[] = [];
-  let left = 0;
-  let right = sorted.length - 1;
-  let pickLeft = false;
-  while (left <= right) {
-    result.push(sorted[pickLeft ? left++ : right--]);
-    pickLeft = !pickLeft;
-  }
-  return result;
-}
-
-/* ── Icon with fallback ── */
 function PluginIcon({
   src,
   name,
@@ -72,18 +82,19 @@ function PluginIcon({
   );
 }
 
-/* ── 3D tilt card ── */
 function PluginCard({
   plugin,
+  duplicate = false,
 }: Readonly<{
   plugin: Plugin;
+  duplicate?: boolean;
 }>) {
   const t = useTranslations('Plugins');
-  const { ref, onMouseMove, onMouseLeave } = useTilt3D();
+  const { ref, onMouseEnter, onMouseMove, onMouseLeave } = useTilt3D<HTMLAnchorElement>();
 
   return (
     <a
-      ref={ref as React.Ref<HTMLAnchorElement>}
+      ref={ref}
       href={`${npm.packageUrl}/${plugin.name}`}
       target="_blank"
       rel="noopener noreferrer"
@@ -91,13 +102,9 @@ function PluginCard({
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* Cursor-following glow */}
       <div className="tilt-card-glow pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-      {/* Shine sweep */}
       <div className="tilt-card-shine pointer-events-none absolute inset-0 overflow-hidden" />
 
-      {/* Header: icon + name */}
       <div className="relative flex items-center gap-3">
         <PluginIcon src={plugin.iconUrl} name={plugin.name} />
         <div className="min-w-0 flex-1">
@@ -120,7 +127,6 @@ function PluginCard({
         {plugin.description}
       </p>
 
-      {/* Separator + metadata */}
       <div className="relative mt-auto pt-3">
         <div className="mb-3 h-px bg-border/60" />
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground/70">
@@ -202,52 +208,48 @@ function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
 function MarqueeRow({
   plugins,
   reverse = false,
-  duration = 35,
+  duration = 40,
 }: Readonly<{
   plugins: Plugin[];
   reverse?: boolean;
   duration?: number;
 }>) {
-  const cards = repeat(plugins, MIN_CARDS);
-  const trackRef = useRef<HTMLDivElement>(null);
-  useMarqueeHover(trackRef);
+  const minCards = useAdaptiveCardCount();
+  const cards = repeat(plugins, minCards);
 
   return (
     <div
       className="marquee-row"
-      style={
-        {
-          '--marquee-duration': `${duration}s`,
-        } as React.CSSProperties
-      }
+      style={{ '--marquee-duration': `${duration}s` } as React.CSSProperties}
     >
-      <div ref={trackRef} className={cn('marquee-track flex gap-5', reverse && 'marquee-reverse')}>
-        {[0, 1].map((copy) => (
-          <div key={copy} className="flex shrink-0 gap-5" aria-hidden={copy === 1}>
-            {cards.map((plugin, i) => (
-              <PluginCard key={`${copy}-${plugin.name}-${i}`} plugin={plugin} />
-            ))}
-          </div>
-        ))}
+      <div className={cn('marquee-track', reverse && 'marquee-reverse')}>
+        <div className="marquee-set">
+          {cards.map((plugin, i) => (
+            <PluginCard key={`a-${plugin.name}-${i}`} plugin={plugin} />
+          ))}
+        </div>
+        {/* Duplicate is aria-hidden (screen readers skip it) but NOT inert —
+            inert would block pointer events, so hovered duplicates wouldn't
+            tilt. Cards use tabIndex={-1} to stay out of tab order. */}
+        <div className="marquee-set" aria-hidden="true">
+          {cards.map((plugin, i) => (
+            <PluginCard key={`b-${plugin.name}-${i}`} plugin={plugin} duplicate />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-/* ── Grid ── */
 export function PluginGrid({
   plugins,
 }: Readonly<{
   plugins: Plugin[];
 }>) {
-  // Both rows show all plugins in different orders to avoid
-  // obvious repetition (especially visible with few plugins).
-  const row2 = interleave(plugins);
-
   return (
-    <div className="marquee-container space-y-4">
-      <MarqueeRow plugins={plugins} duration={40} />
-      <MarqueeRow plugins={row2} reverse duration={50} />
+    <div className="marquee-container">
+      <MarqueeRow plugins={plugins} duration={80} />
+      <MarqueeRow plugins={[...plugins].reverse()} reverse duration={100} />
     </div>
   );
 }

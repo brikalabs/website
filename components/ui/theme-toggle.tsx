@@ -1,33 +1,69 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
-import type { MouseEvent } from 'react';
-import { useEffect, useState } from 'react';
-import { withCircleWipe } from '@/lib/view-transition';
+import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+
+const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(true);
+  const ref = useRef<HTMLButtonElement>(null);
+  const [dark, setDark] = useState(false);
+  const mounted = useRef(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme');
-    const prefersDark =
-      stored === 'dark' ||
-      (!stored && globalThis.matchMedia('(prefers-color-scheme: dark)').matches);
-    setDark(prefersDark);
-    document.documentElement.classList.toggle('dark', prefersDark);
+    setDark(document.documentElement.classList.contains('dark'));
+    mounted.current = true;
   }, []);
 
-  const toggle = (e: MouseEvent<HTMLButtonElement>) => {
-    const next = !dark;
-    setDark(next);
-    withCircleWipe(() => {
-      document.documentElement.classList.toggle('dark', next);
-      localStorage.setItem('theme', next ? 'dark' : 'light');
-    }, e.currentTarget);
+  useEffect(() => {
+    if (!mounted.current) {
+      return;
+    }
+    document.documentElement.classList.toggle('dark', dark);
+    document.cookie = `theme=${dark ? 'dark' : 'light'}; path=/; max-age=${THEME_COOKIE_MAX_AGE}; samesite=lax`;
+  }, [dark]);
+
+  const toggle = async () => {
+    const btn = ref.current;
+    if (
+      !btn ||
+      !('startViewTransition' in document) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      setDark((v) => !v);
+      return;
+    }
+
+    const { top, left, width, height } = btn.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    const maxRadius = Math.max(
+      Math.hypot(x, y),
+      Math.hypot(innerWidth - x, y),
+      Math.hypot(x, innerHeight - y),
+      Math.hypot(innerWidth - x, innerHeight - y)
+    );
+
+    await document.startViewTransition(() => {
+      flushSync(() => setDark((v) => !v));
+    }).ready;
+
+    document.documentElement.animate(
+      {
+        clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${maxRadius}px at ${x}px ${y}px)`],
+      },
+      {
+        duration: 500,
+        easing: 'ease-in-out',
+        pseudoElement: '::view-transition-new(root)',
+      }
+    );
   };
 
   return (
     <button
+      ref={ref}
       type="button"
       onClick={toggle}
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}

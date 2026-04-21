@@ -14,11 +14,9 @@
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "lint": "bunx biome check .",
-    "lint:strict": "bunx biome check . --error-on-warnings",
-    "lint:fix": "bunx biome check --write .",
-    "typecheck": "tsgo --noEmit",
-    "knip": "bunx knip"
+    "check": "biome check . && tsgo --noEmit",
+    "fix": "biome check --write .",
+    "knip": "knip"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.1",

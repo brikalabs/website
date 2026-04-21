@@ -46,7 +46,7 @@ function FeatureCard({
     <div
       ref={ref as React.Ref<HTMLDivElement>}
       className={cn(
-        'tilt-card feature-card group relative overflow-hidden rounded-2xl corner-squircle border border-border bg-surface p-6 will-change-transform',
+        'tilt-card feature-card group corner-squircle relative overflow-hidden rounded-2xl border border-border bg-surface p-6 will-change-transform',
         visible ? 'animate-[card-enter_0.5s_ease-out_backwards]' : 'opacity-0'
       )}
       style={
@@ -82,7 +82,7 @@ function FeatureCard({
       />
 
       <div
-        className="relative mb-4 inline-flex size-12 items-center justify-center rounded-xl corner-squircle"
+        className="corner-squircle relative mb-4 inline-flex size-12 items-center justify-center rounded-xl"
         style={{
           backgroundColor: `color-mix(in oklch, ${feature.color}, transparent 88%)`,
         }}
@@ -94,17 +94,15 @@ function FeatureCard({
           }}
         />
       </div>
-      <h3 className="relative mb-1.5 text-lg font-semibold">
-        {t(`${feature.key}.title`)}
-      </h3>
-      <p className="relative text-sm leading-relaxed text-muted-foreground">
+      <h3 className="relative mb-1.5 font-semibold text-lg">{t(`${feature.key}.title`)}</h3>
+      <p className="relative text-muted-foreground text-sm leading-relaxed">
         {t(`${feature.key}.description`)}
       </p>
       <div className="relative mt-4 flex flex-wrap gap-1.5">
         {t.raw(`${feature.key}.tags`).map((tag: string) => (
           <span
             key={tag}
-            className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
+            className="rounded-full bg-muted px-2.5 py-0.5 font-medium text-[10px] text-muted-foreground transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
           >
             {tag}
           </span>
@@ -123,9 +121,9 @@ export function Features() {
       <div className="mx-auto max-w-5xl px-6">
         <h2
           className={cn(
-            'mb-2 text-center text-3xl font-bold tracking-tight md:text-4xl',
+            'mb-2 text-center font-bold text-3xl tracking-tight md:text-4xl',
             'transition-[opacity,transform] duration-700 ease-out',
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
           )}
         >
           {t('heading')}
@@ -134,7 +132,7 @@ export function Features() {
           className={cn(
             'mb-12 text-center text-muted-foreground',
             'transition-[opacity,transform] duration-700 ease-out',
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
           )}
           style={{
             transitionDelay: visible ? '100ms' : '0ms',

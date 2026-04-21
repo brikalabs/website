@@ -58,12 +58,14 @@ export default function TimerBrick() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[clamp(0.75rem,14%,1rem)] font-bold tabular-nums tracking-tight">
+          <span className="font-bold text-[clamp(0.75rem,14%,1rem)] tabular-nums tracking-tight">
             {String(m).padStart(2, '0')}:{String(s).padStart(2, '0')}
           </span>
         </div>
       </div>
-      <span className="text-[clamp(8px,9%,11px)] font-medium text-muted-foreground">{t('caption')}</span>
+      <span className="font-medium text-[clamp(8px,9%,11px)] text-muted-foreground">
+        {t('caption')}
+      </span>
     </div>
   );
 }

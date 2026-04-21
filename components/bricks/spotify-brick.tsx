@@ -69,7 +69,9 @@ export default function SpotifyBrick() {
   }, [track.duration]);
 
   useEffect(() => {
-    if (!playing || dragging) return;
+    if (!playing || dragging) {
+      return;
+    }
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [playing, dragging, tick]);
@@ -77,7 +79,9 @@ export default function SpotifyBrick() {
   const updateProgress = useCallback(
     (clientX: number) => {
       const bar = barRef.current;
-      if (!bar) return;
+      if (!bar) {
+        return;
+      }
       const rect = bar.getBoundingClientRect();
       const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
       setProgress(Math.floor(ratio * track.duration));
@@ -96,7 +100,9 @@ export default function SpotifyBrick() {
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!dragging) return;
+      if (!dragging) {
+        return;
+      }
       updateProgress(e.clientX);
     },
     [dragging, updateProgress]
@@ -131,18 +137,18 @@ export default function SpotifyBrick() {
         <div className="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-black/70 to-transparent" />
         {/* Track info */}
         <div className="absolute inset-x-0 bottom-0 px-3 pb-2">
-          <div className="truncate text-sm font-bold text-white drop-shadow-sm">{track.title}</div>
+          <div className="truncate font-bold text-sm text-white drop-shadow-sm">{track.title}</div>
           <div className="truncate text-[11px] text-white/70 drop-shadow-sm">{track.artist}</div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="space-y-1.5 px-3 pb-3 pt-2">
+      <div className="space-y-1.5 px-3 pt-2 pb-3">
         {/* Progress bar */}
         <div>
           <div
             ref={barRef}
-            className="group/bar relative h-1 cursor-pointer rounded-full bg-muted touch-none"
+            className="group/bar relative h-1 cursor-pointer touch-none rounded-full bg-muted"
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
@@ -160,7 +166,7 @@ export default function SpotifyBrick() {
               }}
             />
             <div
-              className="absolute top-1/2 -translate-y-1/2 size-2.5 rounded-full bg-primary shadow-sm opacity-0 transition-opacity group-hover/bar:opacity-100"
+              className="absolute top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-primary opacity-0 shadow-sm transition-opacity group-hover/bar:opacity-100"
               style={{
                 left: `calc(${pct}% - 5px)`,
               }}

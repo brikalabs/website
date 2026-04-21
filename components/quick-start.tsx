@@ -33,13 +33,13 @@ function getTabs(channel: Channel): TabConfig[] {
         : `curl -fsSL ${site.url}/install.sh | bash`,
       body: isCanary ? (
         <>
-          <Cmd>curl</Cmd> <Flag>-fsSL</Flag> <span>{site.url}/install.sh</span>{' '}
-          <Flag>|</Flag> <Cmd>bash</Cmd> <Flag>-s</Flag> <span>canary</span>
+          <Cmd>curl</Cmd> <Flag>-fsSL</Flag> <span>{site.url}/install.sh</span> <Flag>|</Flag>{' '}
+          <Cmd>bash</Cmd> <Flag>-s</Flag> <span>canary</span>
         </>
       ) : (
         <>
-          <Cmd>curl</Cmd> <Flag>-fsSL</Flag> <span>{site.url}/install.sh</span>{' '}
-          <Flag>|</Flag> <Cmd>bash</Cmd>
+          <Cmd>curl</Cmd> <Flag>-fsSL</Flag> <span>{site.url}/install.sh</span> <Flag>|</Flag>{' '}
+          <Cmd>bash</Cmd>
         </>
       ),
     },
@@ -51,13 +51,13 @@ function getTabs(channel: Channel): TabConfig[] {
         : `iwr -useb ${site.url}/install.ps1 | iex`,
       body: isCanary ? (
         <>
-          <Cmd>irm</Cmd> <span>{site.url}/install.ps1</span> <Flag>-out</Flag>{' '}
-          <span>i.ps1</span><Flag>;</Flag> <Cmd>./i.ps1</Cmd> <span>canary</span>
+          <Cmd>irm</Cmd> <span>{site.url}/install.ps1</span> <Flag>-out</Flag> <span>i.ps1</span>
+          <Flag>;</Flag> <Cmd>./i.ps1</Cmd> <span>canary</span>
         </>
       ) : (
         <>
-          <Cmd>iwr</Cmd> <Flag>-useb</Flag> <span>{site.url}/install.ps1</span>{' '}
-          <Flag>|</Flag> <Cmd>iex</Cmd>
+          <Cmd>iwr</Cmd> <Flag>-useb</Flag> <span>{site.url}/install.ps1</span> <Flag>|</Flag>{' '}
+          <Cmd>iex</Cmd>
         </>
       ),
     },
@@ -111,12 +111,10 @@ export function QuickStart() {
   return (
     <AnimatedSection id="install" className="py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <h2 className="mb-2 text-center text-3xl font-bold tracking-tight md:text-4xl">
+        <h2 className="mb-2 text-center font-bold text-3xl tracking-tight md:text-4xl">
           {t('heading')}
         </h2>
-        <p className="mb-10 text-center text-muted-foreground">
-          {t('subheading')}
-        </p>
+        <p className="mb-10 text-center text-muted-foreground">{t('subheading')}</p>
 
         <div className="mx-auto max-w-2xl">
           <Terminal
@@ -131,19 +129,15 @@ export function QuickStart() {
                       aria-selected={active === tab.value}
                       onClick={() => setActive(tab.value)}
                       className={cn(
-                        'flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium transition-colors cursor-pointer sm:gap-1.5 sm:px-3',
+                        'flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-1 font-medium text-xs transition-colors sm:gap-1.5 sm:px-3',
                         active === tab.value
                           ? 'bg-primary/15 text-primary'
-                          : 'text-muted-foreground hover:text-foreground',
+                          : 'text-muted-foreground hover:text-foreground'
                       )}
                     >
                       <tab.icon className="size-3.5" />
-                      <span className="hidden sm:inline">
-                        {t(`${tab.value}.label`)}
-                      </span>
-                      <span className="sm:hidden">
-                        {t(`${tab.value}.shortLabel`)}
-                      </span>
+                      <span className="hidden sm:inline">{t(`${tab.value}.label`)}</span>
+                      <span className="sm:hidden">{t(`${tab.value}.shortLabel`)}</span>
                     </button>
                   ))}
                 </div>
@@ -153,10 +147,10 @@ export function QuickStart() {
                       type="button"
                       onClick={() => setChannel('stable')}
                       className={cn(
-                        'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider transition-all cursor-pointer sm:px-2.5',
+                        'cursor-pointer rounded-full px-2 py-0.5 font-semibold text-[10px] uppercase tracking-wider transition-all sm:px-2.5',
                         channel === 'stable'
                           ? 'bg-primary/15 text-primary'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
+                          : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                       )}
                     >
                       stable
@@ -165,16 +159,16 @@ export function QuickStart() {
                       type="button"
                       onClick={() => setChannel('canary')}
                       className={cn(
-                        'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider transition-all cursor-pointer sm:px-2.5',
+                        'cursor-pointer rounded-full px-2 py-0.5 font-semibold text-[10px] uppercase tracking-wider transition-all sm:px-2.5',
                         channel === 'canary'
                           ? 'bg-primary/15 text-primary'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
+                          : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                       )}
                     >
                       canary
                     </button>
                   </div>
-                  <div className="border-l border-code-border pl-2 sm:pl-3">
+                  <div className="border-code-border border-l pl-2 sm:pl-3">
                     <CopyButton value={current.command} />
                   </div>
                 </div>
@@ -188,10 +182,10 @@ export function QuickStart() {
               <Cursor />
             </Line>
             <div className="h-2" />
-            <div className="select-none text-xs text-primary/70">{currentOutput}</div>
+            <div className="select-none text-primary/70 text-xs">{currentOutput}</div>
           </Terminal>
 
-          <p className="mt-4 text-center text-xs text-muted-foreground">
+          <p className="mt-4 text-center text-muted-foreground text-xs">
             {channel === 'canary' && (
               <span className="text-warning">{t('unstableCanary')} &middot; </span>
             )}

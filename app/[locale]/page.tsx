@@ -1,5 +1,5 @@
-import { setRequestLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
+import { setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 import { Bricks } from '@/components/bricks';
 import { Features } from '@/components/features';
@@ -37,7 +37,7 @@ function PluginsSkeleton() {
               (_, i) => (
                 <div
                   key={i}
-                  className="h-44 w-64 shrink-0 animate-pulse rounded-2xl corner-squircle border border-border bg-surface"
+                  className="corner-squircle h-44 w-64 shrink-0 animate-pulse rounded-2xl border border-border bg-surface"
                 />
               )
             )}
@@ -57,11 +57,7 @@ function Divider() {
   );
 }
 
-export default async function Home({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}) {
+export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
@@ -70,8 +66,7 @@ export default async function Home({
   const lat = h.get('x-geo-latitude');
   const lon = h.get('x-geo-longitude');
   const city = h.get('x-geo-city');
-  const weather =
-    lat && lon && city ? await fetchWeatherData(lat, lon, city) : null;
+  const weather = lat && lon && city ? await fetchWeatherData(lat, lon, city) : null;
 
   return (
     <>

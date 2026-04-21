@@ -16,8 +16,11 @@ export default function CpuBrick() {
 
   const rounded = Math.round(load);
   let hue = 30;
-  if (load < 60) hue = 145;
-  else if (load < 80) hue = 90;
+  if (load < 60) {
+    hue = 145;
+  } else if (load < 80) {
+    hue = 90;
+  }
   const color = `oklch(0.7 0.16 ${hue})`;
 
   return (
@@ -32,10 +35,12 @@ export default function CpuBrick() {
             }}
           />
         </div>
-        <div className="text-[clamp(1.25rem,22%,1.5rem)] font-bold leading-tight tracking-tight tabular-nums">
+        <div className="font-bold text-[clamp(1.25rem,22%,1.5rem)] tabular-nums leading-tight tracking-tight">
           {rounded}%
         </div>
-        <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">{t('caption')}</div>
+        <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">
+          {t('caption')}
+        </div>
       </div>
     </div>
   );

@@ -18,4 +18,5 @@ const config: NextConfig = {
 export default withNextIntl(config);
 
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+
 initOpenNextCloudflareForDev();

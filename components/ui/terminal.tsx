@@ -29,7 +29,7 @@ export function Terminal({
         className
       )}
     >
-      <div className="flex flex-wrap items-center gap-2 border-b border-code-border px-3 py-2.5 sm:px-4">
+      <div className="flex flex-wrap items-center gap-2 border-code-border border-b px-3 py-2.5 sm:px-4">
         <TrafficLights />
         {actions && <div className="ml-auto flex flex-wrap items-center gap-2">{actions}</div>}
       </div>

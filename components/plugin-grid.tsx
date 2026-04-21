@@ -11,14 +11,20 @@ import { cn } from '@/lib/utils';
 const MIN_CARDS = 10;
 
 function formatDownloads(n: number) {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  if (n >= 1000) {
+    return `${(n / 1000).toFixed(1)}k`;
+  }
   return String(n);
 }
 
 function repeat<T>(items: T[], min: number): T[] {
-  if (items.length === 0) return [];
+  if (items.length === 0) {
+    return [];
+  }
   const out: T[] = [];
-  while (out.length < min) out.push(...items);
+  while (out.length < min) {
+    out.push(...items);
+  }
   return out;
 }
 
@@ -48,7 +54,7 @@ function PluginIcon({
 
   if (failed) {
     return (
-      <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl corner-squircle bg-primary/10">
+      <div className="corner-squircle flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10">
         <Package className="size-7 text-primary" />
       </div>
     );
@@ -60,7 +66,7 @@ function PluginIcon({
       alt={name}
       width={56}
       height={56}
-      className="size-14 shrink-0 rounded-2xl corner-squircle bg-muted/50 object-cover"
+      className="corner-squircle size-14 shrink-0 rounded-2xl bg-muted/50 object-cover"
       onError={() => setFailed(true)}
     />
   );
@@ -81,7 +87,7 @@ function PluginCard({
       href={`${npm.packageUrl}/${plugin.name}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="tilt-card group relative flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl corner-squircle border border-border bg-surface p-5 will-change-transform"
+      className="tilt-card group corner-squircle relative flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 will-change-transform"
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
@@ -96,7 +102,7 @@ function PluginCard({
         <PluginIcon src={plugin.iconUrl} name={plugin.name} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <h3 className="truncate text-sm font-semibold">{plugin.displayName}</h3>
+            <h3 className="truncate font-semibold text-sm">{plugin.displayName}</h3>
             {plugin.verified && (
               <span className="flex size-4 items-center justify-center rounded-full bg-primary/10">
                 <BadgeCheck className="size-3.5 text-primary" />
@@ -110,7 +116,7 @@ function PluginCard({
       </div>
 
       {/* Description */}
-      <p className="relative mt-3 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+      <p className="relative mt-3 line-clamp-2 text-muted-foreground text-xs leading-relaxed">
         {plugin.description}
       </p>
 
@@ -135,7 +141,9 @@ function PluginCard({
 function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const track: HTMLDivElement | null = trackRef.current;
-    if (!track) return;
+    if (!track) {
+      return;
+    }
     const el = track;
 
     let target = 1;
@@ -148,28 +156,42 @@ function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
       const anim = el.getAnimations()[0];
       if (Math.abs(current - target) < 0.005) {
         current = target;
-        if (anim) anim.playbackRate = current;
+        if (anim) {
+          anim.playbackRate = current;
+        }
         raf = 0;
         return;
       }
 
-      if (anim) anim.playbackRate = current;
+      if (anim) {
+        anim.playbackRate = current;
+      }
       raf = requestAnimationFrame(tick);
     }
 
     function startLerp() {
-      if (!raf) raf = requestAnimationFrame(tick);
+      if (!raf) {
+        raf = requestAnimationFrame(tick);
+      }
     }
 
     const row = track.parentElement;
-    const enter = () => { target = 0; startLerp(); };
-    const leave = () => { target = 1; startLerp(); };
+    const enter = () => {
+      target = 0;
+      startLerp();
+    };
+    const leave = () => {
+      target = 1;
+      startLerp();
+    };
 
     row?.addEventListener('mouseenter', enter);
     row?.addEventListener('mouseleave', leave);
 
     return () => {
-      if (raf) cancelAnimationFrame(raf);
+      if (raf) {
+        cancelAnimationFrame(raf);
+      }
       row?.removeEventListener('mouseenter', enter);
       row?.removeEventListener('mouseleave', leave);
     };

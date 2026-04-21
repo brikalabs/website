@@ -96,17 +96,17 @@ function BrickCard({
   const Icon = brickIcons[id];
 
   return (
-    <div className="group relative flex h-full flex-col rounded-xl corner-squircle border border-border bg-surface select-none overflow-hidden transition-shadow hover:shadow-md">
+    <div className="group corner-squircle relative flex h-full select-none flex-col overflow-hidden rounded-xl border border-border bg-surface transition-shadow hover:shadow-md">
       <div className="flex items-center gap-1.5 px-2.5 pt-2 pb-1.5">
         <Icon className="size-3.5 shrink-0 text-muted-foreground" />
-        <span className="flex-1 truncate text-[11px] font-medium text-muted-foreground">
+        <span className="flex-1 truncate font-medium text-[11px] text-muted-foreground">
           {t(id)}
         </span>
         <div className="drag-handle cursor-grab rounded p-0.5 transition-colors hover:bg-muted active:cursor-grabbing">
           <GripVertical className="size-3 text-muted-foreground/40 opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
       </div>
-      <div className="no-drag mx-0.5 mb-0.5 min-h-0 flex-1 overflow-hidden rounded-[13px] corner-squircle">
+      <div className="no-drag corner-squircle mx-0.5 mb-0.5 min-h-0 flex-1 overflow-hidden rounded-[13px]">
         {Content && (
           <Suspense fallback={<div className="h-full animate-pulse bg-muted/30" />}>
             <Content />
@@ -124,7 +124,9 @@ function DraggableGrid() {
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
 
     const observer = new ResizeObserver((entries) => {
       const width = entries[0]?.contentRect.width ?? MAX_GRID_SIZE;
@@ -183,13 +185,11 @@ export function Bricks({
             <div>
               <div className="mb-4 flex items-center gap-2">
                 <LayoutGrid className="size-5 text-primary" />
-                <span className="text-sm font-semibold text-primary">{t('eyebrow')}</span>
+                <span className="font-semibold text-primary text-sm">{t('eyebrow')}</span>
               </div>
-              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-                {t('heading')}
-              </h2>
-              <p className="leading-relaxed text-muted-foreground">{t('subheading')}</p>
-              <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
+              <h2 className="mb-4 font-bold text-3xl tracking-tight md:text-4xl">{t('heading')}</h2>
+              <p className="text-muted-foreground leading-relaxed">{t('subheading')}</p>
+              <ul className="mt-6 space-y-2 text-muted-foreground text-sm">
                 <li className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-primary" /> {t('bulletDragDrop')}
                 </li>
@@ -200,7 +200,7 @@ export function Bricks({
                   <span className="size-1.5 rounded-full bg-primary" /> {t('bulletInteractive')}
                 </li>
               </ul>
-              <p className="mt-4 text-xs text-muted-foreground italic">{t('hint')}</p>
+              <p className="mt-4 text-muted-foreground text-xs italic">{t('hint')}</p>
             </div>
 
             <DraggableGrid />

@@ -44,7 +44,9 @@ const REVALIDATE = 600;
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {
     const res = await fetch(url, { next: { revalidate: REVALIDATE } });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      return null;
+    }
     return (await res.json()) as T;
   } catch {
     return null;
@@ -57,13 +59,13 @@ export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
     fetchJson<VerifiedList>(registry.verifiedPluginsUrl),
   ]);
 
-  if (!search) return [];
+  if (!search) {
+    return [];
+  }
 
   const verified = new Set(verifiedList?.plugins.map((p) => p.name) ?? []);
 
-  const packages = search.objects
-    .map((o) => o.package)
-    .filter((p) => !excludedPlugins.has(p.name));
+  const packages = search.objects.map((o) => o.package).filter((p) => !excludedPlugins.has(p.name));
 
   const localeFile = (name: string, loc: Locale) =>
     fetchJson<PluginLocaleFile>(`${npm.unpkgUrl}/${name}/locales/${loc}/plugin.json`);

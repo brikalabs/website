@@ -11,7 +11,7 @@ export default function LightsBrick() {
     <div className="relative flex h-full flex-col justify-end overflow-hidden px-[10%] pb-[10%]">
       {on && (
         <div
-          className="pointer-events-none absolute -top-[10%] -right-[10%] h-[55%] aspect-square rounded-full animate-pulse"
+          className="pointer-events-none absolute -top-[10%] -right-[10%] aspect-square h-[55%] animate-pulse rounded-full"
           style={{
             background: 'oklch(0.85 0.16 90)',
             filter: 'blur(20px)',
@@ -21,7 +21,7 @@ export default function LightsBrick() {
       )}
       <div className="flex items-end justify-between">
         <div>
-          <div className="text-[clamp(0.875rem,15%,1.125rem)] font-bold leading-tight tracking-tight">
+          <div className="font-bold text-[clamp(0.875rem,15%,1.125rem)] leading-tight tracking-tight">
             {on ? t('on') : t('off')}
           </div>
           <div className="mt-[3%] text-[clamp(8px,9%,11px)] text-muted-foreground">{t('room')}</div>
@@ -29,14 +29,14 @@ export default function LightsBrick() {
         <button
           type="button"
           onClick={() => setOn((v) => !v)}
-          className="no-drag relative h-[22%] aspect-[1.8/1] min-h-4 cursor-pointer rounded-full transition-colors duration-300"
+          className="no-drag relative aspect-[1.8/1] h-[22%] min-h-4 cursor-pointer rounded-full transition-colors duration-300"
           style={{
             background: on ? 'var(--primary)' : 'var(--muted)',
           }}
           aria-label={t('toggle')}
         >
           <div
-            className="absolute top-[10%] h-[80%] aspect-square rounded-full bg-white shadow-sm transition-transform duration-300"
+            className="absolute top-[10%] aspect-square h-[80%] rounded-full bg-white shadow-sm transition-transform duration-300"
             style={{
               transform: on ? 'translateX(calc(100% - 2px))' : 'translateX(2px)',
             }}

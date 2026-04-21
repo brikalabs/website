@@ -1,5 +1,5 @@
-import createMiddleware from 'next-intl/middleware';
 import type { NextRequest } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
@@ -21,9 +21,15 @@ export function middleware(request: NextRequest) {
 
   const cf = (request as NextRequest & { cf?: IncomingRequestCfProperties }).cf;
   if (cf) {
-    if (cf.latitude) response.headers.set('x-geo-latitude', cf.latitude);
-    if (cf.longitude) response.headers.set('x-geo-longitude', cf.longitude);
-    if (cf.city) response.headers.set('x-geo-city', encodeURIComponent(cf.city));
+    if (cf.latitude) {
+      response.headers.set('x-geo-latitude', cf.latitude);
+    }
+    if (cf.longitude) {
+      response.headers.set('x-geo-longitude', cf.longitude);
+    }
+    if (cf.city) {
+      response.headers.set('x-geo-city', encodeURIComponent(cf.city));
+    }
   }
 
   return response;

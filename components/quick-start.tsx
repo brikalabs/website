@@ -147,7 +147,7 @@ export function QuickStart() {
                       aria-hidden
                       className={cn(
                         'pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-primary/15 transition-transform duration-200 ease-out',
-                        channel === 'canary' && 'translate-x-full',
+                        channel === 'canary' && 'translate-x-full'
                       )}
                     />
                     <button

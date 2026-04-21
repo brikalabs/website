@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -92,17 +93,6 @@ export async function generateMetadata({
   };
 }
 
-// Inline script to prevent flash of wrong theme
-const themeScript = `
-  (function(){
-    try {
-      var t = localStorage.getItem('theme');
-      var d = t === 'dark' || (!t && matchMedia('(prefers-color-scheme:dark)').matches);
-      document.documentElement.classList.toggle('dark', d);
-    } catch(e) {}
-  })()
-`;
-
 export default async function RootLayout({
   children,
   params,
@@ -115,6 +105,9 @@ export default async function RootLayout({
     notFound();
   }
   setRequestLocale(locale);
+
+  const theme = (await cookies()).get('theme')?.value;
+  const isDark = theme !== 'light';
 
   const t = await getTranslations({ locale, namespace: 'Metadata' });
 
@@ -137,21 +130,18 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: themeScript,
-          }}
-        />
+    <html
+      lang={locale}
+      className={isDark ? 'dark' : undefined}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen font-sans">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLd),
-          }}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD for SEO.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body className="min-h-screen font-sans">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

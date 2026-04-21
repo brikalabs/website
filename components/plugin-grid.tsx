@@ -215,7 +215,7 @@ function MarqueeRow({
   duration?: number;
 }>) {
   const minCards = useAdaptiveCardCount();
-  const cards = padTo(plugins, minCards);
+  const cards = repeat(plugins, minCards);
 
   return (
     <div

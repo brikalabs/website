@@ -16,7 +16,7 @@ interface IncomingRequestCfProperties {
  * Geo data isn't available as standard HTTP headers, so we copy it from
  * `request.cf` into `x-geo-*` headers for server components to read.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = intlMiddleware(request);
 
   const cf = (request as NextRequest & { cf?: IncomingRequestCfProperties }).cf;

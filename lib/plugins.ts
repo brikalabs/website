@@ -1,5 +1,6 @@
 import type { Locale } from '@/i18n/routing';
 import { excludedPlugins, npm, registry } from '@/lib/config';
+import { translateBatch } from '@/lib/translate';
 
 export interface Plugin {
   name: string;
@@ -83,7 +84,7 @@ export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
     locale === 'en' ? null : Promise.all(packages.map((p) => localeFile(p.name, locale))),
   ]);
 
-  return packages
+  const plugins = packages
     .map((p, i) => ({
       name: p.name,
       displayName:
@@ -101,15 +102,26 @@ export async function fetchPlugins(locale: Locale): Promise<Plugin[]> {
 
   if (locale === 'en') return plugins;
 
-  // Translate displayName + description for each plugin in a single batch.
-  const texts: string[] = [];
-  for (const p of plugins) {
-    texts.push(p.displayName, p.description);
-  }
-  const translated = await translateBatch(texts, locale);
+  const localizedByName = new Map(
+    packages.map((p, i) => [p.name, localized?.[i]] as const)
+  );
+
+  const entries = plugins.flatMap((p, i) => {
+    const loc = localizedByName.get(p.name);
+    const items: { idx: number; text: string }[] = [];
+    if (!loc?.name) items.push({ idx: i * 2, text: p.displayName });
+    if (!loc?.description) items.push({ idx: i * 2 + 1, text: p.description });
+    return items;
+  });
+  const translated = await translateBatch(
+    entries.map((e) => e.text),
+    locale
+  );
+  const byIdx = new Map(entries.map((e, k) => [e.idx, translated[k]]));
+
   return plugins.map((p, i) => ({
     ...p,
-    displayName: translated[i * 2] ?? p.displayName,
-    description: translated[i * 2 + 1] ?? p.description,
+    displayName: byIdx.get(i * 2) ?? p.displayName,
+    description: byIdx.get(i * 2 + 1) ?? p.description,
   }));
 }

@@ -16,10 +16,7 @@ import type { Locale } from '@/i18n/routing';
  * - Returns an array the same length as `texts`, in the same order.
  * - Never throws. On any failure, the corresponding input is returned as-is.
  */
-export async function translateBatch(
-  texts: string[],
-  locale: Locale
-): Promise<string[]> {
+export async function translateBatch(texts: string[], locale: Locale): Promise<string[]> {
   if (locale === 'en' || texts.length === 0) return texts;
 
   // Request-level memoization: if the same (text, locale) pair appears twice,
@@ -130,9 +127,7 @@ async function translateOne(text: string, locale: Locale): Promise<string> {
     return text;
   }
 
-  const translated = await withConcurrency(() =>
-    callAnthropic(text, locale, apiKey)
-  );
+  const translated = await withConcurrency(() => callAnthropic(text, locale, apiKey));
   if (translated === null) return text;
 
   // Write-through to KV. Failures are non-fatal.
@@ -147,11 +142,7 @@ async function translateOne(text: string, locale: Locale): Promise<string> {
   return translated;
 }
 
-async function callAnthropic(
-  text: string,
-  locale: Locale,
-  apiKey: string
-): Promise<string | null> {
+async function callAnthropic(text: string, locale: Locale, apiKey: string): Promise<string | null> {
   const targetLanguage =
     locale === 'en'
       ? 'English'
@@ -165,10 +156,7 @@ async function callAnthropic(
     `Respond with only the translated string, no quotes, no commentary.`;
 
   // Rough heuristic: ~1 token per 4 chars. Double that, floor 128, cap 2048.
-  const maxTokens = Math.min(
-    2048,
-    Math.max(128, Math.ceil((text.length / 4) * 2))
-  );
+  const maxTokens = Math.min(2048, Math.max(128, Math.ceil((text.length / 4) * 2)));
 
   try {
     const client = new Anthropic({ apiKey });

@@ -610,17 +610,11 @@
   }
 }
 
-
-/* ── View transition (theme circle wipe) — MDN reference pattern ── */
-::view-transition-image-pair(root) {
-  isolation: auto;
-}
-
+/* ── View transition (theme circle wipe) ── */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
-  display: block;
 }
 
 /* ── Reduced motion ── */

@@ -1,0 +1,231 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+
+  "files": {
+    "ignoreUnknown": false
+  },
+
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100,
+    "attributePosition": "auto",
+    "bracketSameLine": false,
+    "bracketSpacing": true,
+    "expand": "auto",
+    "useEditorconfig": true,
+    "includes": [
+      "app/**",
+      "components/**",
+      "lib/**",
+      "i18n/**",
+      "messages/**",
+      "*.ts",
+      "*.tsx",
+      "*.json",
+      "*.config.*",
+      "!biome.json",
+      "!**/node_modules/**",
+      "!**/.next/**",
+      "!**/.open-next/**",
+      "!**/.wrangler/**",
+      "!**/dist/**",
+      "!**/build/**",
+      "!**/coverage/**",
+      "!**/logs/**",
+      "!**/*.log",
+      "!**/.env",
+      "!**/.env.*",
+      "!**/*.md",
+      "!**/*.tsbuildinfo"
+    ]
+  },
+
+  "linter": {
+    "enabled": true,
+    "includes": [
+      "app/**/*.{ts,tsx,js,jsx,mts,cts}",
+      "components/**/*.{ts,tsx,js,jsx,mts,cts}",
+      "lib/**/*.{ts,tsx,js,jsx,mts,cts}",
+      "i18n/**/*.{ts,tsx,js,jsx,mts,cts}",
+      "*.ts",
+      "*.tsx"
+    ],
+    "rules": {
+      "recommended": false,
+
+      "complexity": {
+        "noAdjacentSpacesInRegex": "error",
+        "noBannedTypes": "error",
+        "noExtraBooleanCast": "error",
+        "noUselessCatch": "error",
+        "noUselessEscapeInRegex": "error",
+        "noUselessTypeConstraint": "error",
+        "noUselessRename": "error",
+        "noExcessiveCognitiveComplexity": {
+          "level": "error",
+          "options": { "maxAllowedComplexity": 25 }
+        }
+      },
+
+      "correctness": {
+        "noConstAssign": "error",
+        "noConstantCondition": "error",
+        "noEmptyCharacterClassInRegex": "error",
+        "noEmptyPattern": "error",
+        "noGlobalObjectCalls": "error",
+        "noInnerDeclarations": "error",
+        "noInvalidConstructorSuper": "error",
+        "noNonoctalDecimalEscape": "error",
+        "noPrecisionLoss": "error",
+        "noSelfAssign": "error",
+        "noSetterReturn": "error",
+        "noSwitchDeclarations": "error",
+        "noUndeclaredVariables": "error",
+        "noUnreachable": "error",
+        "noUnreachableSuper": "error",
+        "noUnsafeFinally": "error",
+        "noUnsafeOptionalChaining": "error",
+        "noUnusedLabels": "error",
+        "noUnusedVariables": "error",
+        "useIsNan": "error",
+        "useValidForDirection": "error",
+        "useValidTypeof": "error",
+        "useYield": "error"
+      },
+
+      "style": {
+        "noNamespace": "error",
+        "noExportedImports": "error",
+        "noNonNullAssertion": "error",
+        "useArrayLiterals": "error",
+        "useAsConstAssertion": "error",
+        "useTemplate": "error",
+        "noYodaExpression": "error",
+        "useNodejsImportProtocol": "error",
+        "noUselessElse": "error",
+        "noNestedTernary": "error",
+        "useBlockStatements": "error"
+      },
+
+      "suspicious": {
+        "noAsyncPromiseExecutor": "error",
+        "noCatchAssign": "error",
+        "noClassAssign": "error",
+        "noCompareNegZero": "error",
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["warn", "error", "info", "log"]
+          }
+        },
+        "noControlCharactersInRegex": "error",
+        "noDebugger": "error",
+        "noDuplicateCase": "error",
+        "noDuplicateClassMembers": "error",
+        "noDuplicateElseIf": "error",
+        "noDuplicateObjectKeys": "error",
+        "noDuplicateParameters": "error",
+        "noEmptyBlockStatements": "error",
+        "noExplicitAny": "error",
+        "noExtraNonNullAssertion": "error",
+        "noFallthroughSwitchClause": "error",
+        "noFunctionAssign": "error",
+        "noGlobalAssign": "error",
+        "noImportAssign": "error",
+        "noIrregularWhitespace": "error",
+        "noMisleadingCharacterClass": "error",
+        "noMisleadingInstantiator": "error",
+        "noNonNullAssertedOptionalChain": "error",
+        "noPrototypeBuiltins": "error",
+        "noRedeclare": "error",
+        "noShadowRestrictedNames": "error",
+        "noSparseArray": "error",
+        "noUnsafeDeclarationMerging": "error",
+        "noUnsafeNegation": "error",
+        "noUselessRegexBackrefs": "error",
+        "noWith": "error",
+        "useAwait": "error",
+        "useGetterReturn": "error",
+        "noDeprecatedImports": "error",
+        "noImportCycles": "error"
+      },
+
+      "nursery": {
+        "useSortedClasses": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "attributes": ["class", "className", "classList"],
+            "functions": ["clsx", "cva", "tw", "tw.*", "cn"]
+          }
+        },
+        "noUselessReturn": "error",
+        "noEqualsToNull": "error"
+      }
+    }
+  },
+
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "es5",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "quoteStyle": "single",
+      "attributePosition": "auto",
+      "bracketSpacing": true
+    }
+  },
+
+  "html": {
+    "formatter": {
+      "indentScriptAndStyle": false,
+      "selfCloseVoidElements": "always"
+    }
+  },
+
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+
+  "overrides": [
+    {
+      "includes": ["**/*.{ts,tsx,mts,cts,js,jsx}"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noArguments": "error"
+          },
+          "style": {
+            "useConst": "error"
+          },
+          "suspicious": {
+            "noVar": "error"
+          }
+        }
+      }
+    }
+  ],
+
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
+}

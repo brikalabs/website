@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "app/**/{page,layout,loading,error,not-found,route,opengraph-image,default,template,sitemap,robots,manifest,icon,apple-icon}.{ts,tsx}",
+    "i18n/routing.ts",
+    "open-next.config.ts"
+  ],
+  "project": ["**/*.{ts,tsx}!"],
+  "ignoreDependencies": ["postcss", "tailwindcss"]
+}

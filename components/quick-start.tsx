@@ -64,10 +64,10 @@ function getTabs(channel: Channel): TabConfig[] {
     {
       value: 'docker',
       icon: FaDocker,
-      command: `docker run -d -p ${docker.port}:${docker.port} --name brika ${dockerImage}`,
+      command: `docker run -d --pull=always -p ${docker.port}:${docker.port} --name brika ${dockerImage}`,
       body: (
         <>
-          <Cmd>docker</Cmd> <Flag>run -d -p</Flag>{' '}
+          <Cmd>docker</Cmd> <Flag>run -d</Flag> <Flag>--pull=always</Flag> <Flag>-p</Flag>{' '}
           <span>
             {docker.port}:{docker.port}
           </span>{' '}

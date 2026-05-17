@@ -15,6 +15,10 @@
   --color-code-bg: var(--code-bg);
   --color-code-border: var(--code-border);
   --color-accent: var(--accent);
+
+  /* Reactbits-derived animations */
+  --animate-star-movement-bottom: star-movement-bottom linear infinite alternate;
+  --animate-star-movement-top: star-movement-top linear infinite alternate;
 }
 
 /* ── Light theme ── */
@@ -39,22 +43,22 @@
 
 /* ── Dark theme ── */
 .dark {
-  --background: oklch(0.09 0.015 265);
-  --foreground: oklch(0.96 0.01 260);
-  --surface: oklch(0.13 0.015 265);
-  --muted: oklch(0.18 0.015 265);
-  --muted-foreground: oklch(0.6 0.02 260);
-  --primary: oklch(0.7 0.16 265);
-  --primary-foreground: oklch(0.09 0.015 265);
-  --border: oklch(0.22 0.015 265);
-  --code-bg: oklch(0.13 0.02 265);
-  --code-border: oklch(0.25 0.02 265);
-  --accent: oklch(0.72 0.14 200);
-  --glow: oklch(0.7 0.16 265 / 0.15);
-  --glow-hover: oklch(0.7 0.16 265 / 0.25);
-  --grid-dot: oklch(0.3 0.015 265);
-  --comment: oklch(0.55 0.12 145);
-  --cmd: oklch(0.72 0.14 200);
+  --background: oklch(0.17 0.04 280);
+  --foreground: oklch(0.96 0.01 280);
+  --surface: oklch(0.24 0.05 280);
+  --muted: oklch(0.29 0.05 280);
+  --muted-foreground: oklch(0.68 0.03 280);
+  --primary: oklch(0.72 0.17 280);
+  --primary-foreground: oklch(0.17 0.04 280);
+  --border: oklch(0.36 0.055 280);
+  --code-bg: oklch(0.22 0.05 280);
+  --code-border: oklch(0.38 0.055 280);
+  --accent: oklch(0.74 0.14 200);
+  --glow: oklch(0.72 0.17 280 / 0.22);
+  --glow-hover: oklch(0.72 0.17 280 / 0.35);
+  --grid-dot: oklch(0.4 0.045 280);
+  --comment: oklch(0.6 0.12 145);
+  --cmd: oklch(0.74 0.14 200);
 }
 
 @layer base {
@@ -205,6 +209,82 @@
   }
 }
 
+/* Chip entry: pops up to its target scale/opacity from below */
+@keyframes chip-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(calc(var(--chip-scale, 1) * 0.7));
+  }
+  to {
+    opacity: var(--chip-opacity, 1);
+    transform: translateY(0) scale(var(--chip-scale, 1));
+  }
+}
+
+/* Clay tile entry: each tile pops up from below with a stagger */
+@keyframes clay-tile-pop {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.55);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Clay tile breathe: very subtle continuous scale so the logo feels alive */
+@keyframes clay-tile-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+  }
+}
+
+/* Clay backlight pulse: bloom + core both breathe on this, the core
+   reversed so the layers crossfade rather than swell in sync */
+@keyframes clay-backlight-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+/* Slow rotation of the conic ray gradient — gives ambient directional
+   shimmer without ever calling attention to itself */
+@keyframes clay-backlight-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Subtle orbital drift — keeps the constellation alive without jitter */
+@keyframes chip-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(var(--chip-scale, 1));
+  }
+  25% {
+    transform: translate3d(2px, -4px, 0) scale(var(--chip-scale, 1));
+  }
+  50% {
+    transform: translate3d(-3px, 2px, 0) scale(var(--chip-scale, 1));
+  }
+  75% {
+    transform: translate3d(3px, 3px, 0) scale(var(--chip-scale, 1));
+  }
+}
+
 @keyframes bar-grow {
   from {
     transform: scaleY(0);
@@ -263,6 +343,53 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes gradient-flow {
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+}
+
+@keyframes star-movement-bottom {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-100%, 0%);
+    opacity: 0;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(100%, 0%);
+    opacity: 0;
+  }
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(var(--p-dx) * 0.2), calc(var(--p-dy) * 0.2)) scale(1);
+  }
+  100% {
+    transform: translate(var(--p-dx), var(--p-dy)) scale(0.3);
+    opacity: 0;
   }
 }
 
@@ -552,12 +679,291 @@
     box-shadow: 0 0 64px -12px var(--glow-hover);
   }
 
+  /* ── Gradient flow text — cool tech/HUD palette ── */
+  .gradient-flow-text {
+    background-image: linear-gradient(
+      110deg,
+      oklch(0.6 0.16 200) 0%,
+      oklch(0.78 0.18 195) 25%,
+      oklch(0.82 0.16 175) 50%,
+      oklch(0.75 0.18 200) 75%,
+      oklch(0.6 0.16 200) 100%
+    );
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: gradient-flow 10s ease-in-out infinite;
+    filter: drop-shadow(0 0 22px oklch(0.55 0.16 200 / 0.18));
+  }
+
+  .dark .gradient-flow-text {
+    background-image: linear-gradient(
+      110deg,
+      oklch(0.72 0.16 200) 0%,
+      oklch(0.85 0.18 190) 25%,
+      oklch(0.9 0.14 170) 50%,
+      oklch(0.82 0.18 200) 75%,
+      oklch(0.72 0.16 200) 100%
+    );
+    filter: drop-shadow(0 0 28px oklch(0.78 0.16 200 / 0.35));
+  }
+
+  /* ── TUI monospace grid ──
+     Every char must occupy exactly one cell so vertical borders line up
+     across rows. Disable kerning/ligatures so adjacent <span>s don't drift
+     into each other, and zero out letter-spacing. */
+  .tui-mono {
+    font-variant-ligatures: none;
+    font-feature-settings:
+      "calt" off,
+      "kern" off,
+      "liga" off;
+    font-kerning: none;
+    letter-spacing: 0;
+    text-rendering: geometricPrecision;
+  }
+
+  /* ── Spotlight card (Magic-Bento style border glow) ── */
+  .spotlight-card {
+    --glow-x: 50%;
+    --glow-y: 50%;
+    --glow-intensity: 0;
+    --glow-radius: 320px;
+    position: relative;
+  }
+
+  /* Cursor-driven radial glow inside each card. Drawn above the card bg but
+     below content via -z hack — content lifts itself with `relative z-10`. */
+  .spotlight-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+      rgba(var(--spotlight-glow, 120, 90, 255), calc(0.18 * var(--glow-intensity))),
+      rgba(var(--spotlight-glow, 120, 90, 255), calc(0.06 * var(--glow-intensity))) 35%,
+      transparent 65%
+    );
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
+
+  /* Crisp 1px border glow that lights along the cursor edge using mask-composite. */
+  .spotlight-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+      rgba(var(--spotlight-glow, 120, 90, 255), calc(0.9 * var(--glow-intensity))),
+      rgba(var(--spotlight-glow, 120, 90, 255), calc(0.3 * var(--glow-intensity))) 40%,
+      transparent 70%
+    );
+    -webkit-mask:
+      linear-gradient(black, black) content-box,
+      linear-gradient(black, black);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(black, black) content-box,
+      linear-gradient(black, black);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* ── Clay galaxy chip ──
+     Constellation chips orbit the Clay tile cluster. Each chip carries
+     `--chip-scale` (depth → smaller for further), `--chip-opacity`,
+     `--chip-delay` (entry stagger), and `--chip-phase` (per-chip float
+     offset) so the field never reads as a uniform loop.
+
+     Two animations layered: a one-shot entry pop, and an infinite gentle
+     drift. The chip rests at its target opacity/scale via the entry's
+     `backwards` fill and the float keeping `--chip-scale` baked in. */
+  .clay-chip {
+    transform-origin: center;
+    opacity: var(--chip-opacity, 1);
+    transform: scale(var(--chip-scale, 1));
+    will-change: transform, opacity;
+    animation:
+      chip-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards,
+      chip-float 9s ease-in-out infinite;
+    animation-delay: var(--chip-delay, 0ms), var(--chip-phase, 0s);
+    transition:
+      filter 0.25s ease,
+      box-shadow 0.25s ease,
+      opacity 0.25s ease;
+  }
+
+  /* Hover: brighten + glow with the chip's own dot color so each chip
+     pulls toward its star hue. Drift continues underneath. */
+  .clay-chip:hover {
+    opacity: 1;
+    filter: brightness(1.12);
+    box-shadow:
+      0 4px 14px -2px oklch(0 0 0 / 0.25),
+      0 0 18px -2px var(--chip-dot, oklch(0.8 0.15 60));
+  }
+
+  /* Distant chips read as out-of-focus background stars. */
+  .clay-chip-distant {
+    filter: blur(0.4px);
+    letter-spacing: 0.01em;
+  }
+
+  .clay-chip-distant:hover {
+    filter: blur(0) brightness(1.15);
+  }
+
+  /* ── Clay stack tilt ──
+     Bare wrapper that only binds the tilt hook's custom props to a transform.
+     We don't reuse .tilt-card here: that class also paints a hover halo
+     (box-shadow + border-color) that would render as an ugly floating
+     rectangle around this borderless visual. */
+  .clay-stack-wrapper {
+    --rx: 0;
+    --ry: 0;
+    transform-style: preserve-3d;
+    transform: perspective(900px) rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ── Clay tiles (claymorphic depth) ──
+     Three stacked rects that mirror the @brika/clay brand mark. Each tile
+     gets a warm gradient body, a soft inset highlight on the top edge, a
+     warm ambient glow shadow so it reads as luminous material, and two
+     layered animations: a staggered entry pop and a slow continuous breathe.
+     `--i` (0..2) staggers the pop so the cluster assembles into place. */
+  .clay-tile {
+    border-radius: 14px;
+    background:
+      linear-gradient(180deg, oklch(1 0 0 / 0.22) 0%, transparent 45%),
+      linear-gradient(165deg, #e3dccd 0%, #c8beae 55%, #aa9f90 100%);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.55),
+      inset 0 -2px 0 oklch(0 0 0 / 0.08),
+      inset 0 0 0 1px oklch(0 0 0 / 0.06),
+      0 8px 20px -10px oklch(0.4 0.04 60 / 0.4),
+      0 0 28px -4px oklch(0.85 0.1 75 / 0.35),
+      0 2px 6px -2px oklch(0.4 0.04 60 / 0.25);
+    transform-origin: center;
+    animation:
+      clay-tile-pop 0.85s cubic-bezier(0.16, 1, 0.3, 1) backwards,
+      clay-tile-breathe 5s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 130ms), calc(900ms + var(--i, 0) * 130ms);
+  }
+
+  .dark .clay-tile {
+    background:
+      linear-gradient(180deg, oklch(1 0 0 / 0.06) 0%, transparent 40%),
+      linear-gradient(165deg, #4a443c 0%, #383229 55%, #2b2620 100%);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.08),
+      inset 0 -2px 0 oklch(0 0 0 / 0.25),
+      inset 0 0 0 1px oklch(0 0 0 / 0.3),
+      0 10px 24px -10px oklch(0 0 0 / 0.55),
+      0 2px 8px -2px oklch(0 0 0 / 0.4),
+      0 0 32px -4px oklch(0.78 0.12 72 / 0.25);
+  }
+
+  /* ── Clay backlight ──
+     Three-layer cinematic glow behind the Clay brand mark:
+
+     (1) `.clay-backlight-rays` — slow-rotating conic gradient of warm
+         sunbeams. Big blur + low opacity so it reads as ambient
+         directional light, not visible rays.
+     (2) `.clay-backlight-bloom` — diffuse warm-amber halo that breathes
+         under the cluster, giving the logo a "lit from behind" feel.
+     (3) `.clay-backlight-core` — bright cream key light tucked directly
+         behind the tiles. The brightest layer; carries the punch. */
+
+  .clay-backlight-rays {
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg,
+      oklch(0.88 0.12 75 / 0.35) 35deg,
+      transparent 75deg,
+      transparent 135deg,
+      oklch(0.85 0.14 50 / 0.3) 170deg,
+      transparent 210deg,
+      transparent 270deg,
+      oklch(0.9 0.1 85 / 0.3) 305deg,
+      transparent 345deg
+    );
+    border-radius: 50%;
+    filter: blur(40px);
+    mix-blend-mode: screen;
+    animation: clay-backlight-rotate 28s linear infinite;
+    will-change: transform;
+  }
+
+  .clay-backlight-bloom {
+    background: radial-gradient(
+      ellipse 75% 70% at 50% 50%,
+      oklch(0.87 0.13 65 / 0.55) 0%,
+      oklch(0.78 0.14 50 / 0.32) 35%,
+      oklch(0.7 0.15 45 / 0.12) 60%,
+      transparent 80%
+    );
+    border-radius: 50%;
+    filter: blur(20px);
+    animation: clay-backlight-pulse 6s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+
+  .clay-backlight-core {
+    background: radial-gradient(
+      circle at 50% 48%,
+      oklch(0.97 0.1 82 / 0.75) 0%,
+      oklch(0.9 0.14 65 / 0.5) 22%,
+      oklch(0.78 0.16 50 / 0.18) 50%,
+      transparent 75%
+    );
+    border-radius: 50%;
+    filter: blur(14px);
+    animation: clay-backlight-pulse 5s ease-in-out infinite reverse;
+    will-change: transform, opacity;
+  }
+
+  /* In dark mode, push the backlight slightly warmer + brighter so the
+     logo punches through the cool surface. */
+  .dark .clay-backlight-core {
+    background: radial-gradient(
+      circle at 50% 48%,
+      oklch(0.92 0.14 75 / 0.85) 0%,
+      oklch(0.82 0.16 55 / 0.55) 25%,
+      oklch(0.7 0.17 45 / 0.2) 55%,
+      transparent 78%
+    );
+  }
+  .dark .clay-backlight-bloom {
+    background: radial-gradient(
+      ellipse 75% 70% at 50% 50%,
+      oklch(0.78 0.16 65 / 0.55) 0%,
+      oklch(0.68 0.17 50 / 0.32) 35%,
+      transparent 75%
+    );
+  }
+
   /* ── Hero icon (rotating border like buttons) ── */
+  /* drop-shadow (not box-shadow) so the glow follows the squircle
+     silhouette from corner-shape: squircle, not the underlying border-radius
+     geometry. Box-shadow only sees border-radius — it would render circular. */
   .hero-icon {
     position: relative;
     z-index: 0;
     overflow: hidden;
-    box-shadow: 0 8px 40px -8px oklch(0 0 0 / 0.15);
+    filter: drop-shadow(0 0 18px color-mix(in oklch, var(--primary) 40%, transparent))
+      drop-shadow(0 0 48px color-mix(in oklch, var(--primary) 30%, transparent))
+      drop-shadow(0 12px 32px rgb(0 0 0 / 0.25));
   }
 
   .hero-icon::before {
@@ -581,7 +987,10 @@
   }
 
   .dark .hero-icon {
-    box-shadow: 0 8px 48px -8px oklch(from var(--primary) l c h / 0.25);
+    filter: drop-shadow(0 0 24px color-mix(in oklch, var(--primary) 60%, transparent))
+      drop-shadow(0 0 56px color-mix(in oklch, var(--primary) 45%, transparent))
+      drop-shadow(0 0 96px color-mix(in oklch, var(--accent) 30%, transparent))
+      drop-shadow(0 12px 40px rgb(0 0 0 / 0.5));
   }
 }
 
@@ -624,7 +1033,9 @@
   .hero-icon::before,
   .marquee-track,
   .terminal-cursor,
-  .scroll-hint {
+  .scroll-hint,
+  .gradient-flow-text,
+  [class*="animate-star-movement"] {
     animation: none !important;
   }
 

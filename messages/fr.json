@@ -50,22 +50,39 @@
   },
   "Features": {
     "heading": "Pourquoi Brika",
-    "subheading": "Tout tourne en local. Vous possédez les données, les plugins et l'infrastructure.",
-    "reactiveBlocks": {
-      "title": "Blocs réactifs",
-      "description": "Des blocs de workflow typés, propulsés par Zod et des flux réactifs. Inférence complète, zéro boilerplate.",
-      "tags": ["Zod", "Typé", "Réactif"]
+    "subheading": "Auto-hébergé, hackable, open source. Le hub d'automatisation pour les builders.",
+    "localFirst": {
+      "title": "Vos données, votre hub",
+      "description": "Chaque workflow, chaque tableau de bord, chaque octet reste sur votre machine. Aucune télémétrie, aucun compte cloud, aucun tiers qui lit vos capteurs. Brika est à vous, de bout en bout.",
+      "tags": ["Auto-hébergé", "Sans télémétrie", "Mode hors-ligne", "Licence MIT"]
     },
-    "isolatedPlugins": {
-      "title": "Plugins isolés",
-      "description": "Chaque plugin tourne dans son propre processus. Isolation des crashs, IPC binaire et hot-reload livrés d'office.",
-      "tags": ["Isolation des processus", "IPC", "Hot-reload"]
+    "alwaysOn": {
+      "title": "Conçu pour durer",
+      "description": "Chaque plugin tourne dans son propre processus Bun. Si l'un déraille, les autres continuent. Votre hub reste debout, en silence, année après année.",
+      "tags": ["Isolation des processus", "Redémarrage auto", "IPC binaire"]
     },
-    "visualEditor": {
-      "title": "Éditeur visuel",
-      "description": "Un constructeur d'automatisations en drag-and-drop, directement dans votre navigateur. Connectez les blocs, configurez les flux et voyez les résultats en direct.",
-      "tags": ["Glisser-déposer", "Temps réel", "Navigateur"]
+    "visualBuilder": {
+      "title": "Glissez, déposez, c'est fait",
+      "description": "Workflows dans l'éditeur, briques sur votre tableau de bord. Même glisser-déposer, même aperçu en direct, mêmes plugins qui alimentent les deux.",
+      "tags": ["Workflows", "Tableaux de bord", "Aperçu en direct"],
+      "cta": "Voir les briques en direct"
+    },
+    "extensible": {
+      "title": "Conçu pour être étendu",
+      "description": "Les plugins sont de vrais projets TypeScript. Blocs typés avec Zod, bricks React compilées en ESM scopé, hot-reload pendant le dev. Publiez comme un package npm.",
+      "tags": ["TypeScript", "Zod v4", "Publiable sur npm", "Hot-reload"],
+      "cta": "Parcourir les plugins & SDK"
+    },
+    "runsAnywhere": {
+      "title": "Assez léger pour un Pi",
+      "description": "Un seul binaire, pas de Node, pas de Docker requis. Runtime Bun et UI embarqués. Mac, Linux, Windows, Raspberry Pi, démarre en moins d'une seconde.",
+      "tags": ["Binaire unique", "Multiplateforme"],
+      "cta": "Installer en quelques secondes"
     }
+  },
+  "CliDemo": {
+    "heading": "Vivez dans votre terminal",
+    "subheading": "Le TUI plein écran de Brika est livré dans le même binaire. Gérez les plugins, suivez les workflows, lisez les logs — sans jamais quitter le terminal."
   },
   "Bricks": {
     "eyebrow": "Briques",
@@ -110,6 +127,47 @@
       "stormy": "Orageux"
     }
   },
+  "RemoteAccess": {
+    "eyebrow": "Accès distant",
+    "heading": "Atteignez votre hub depuis n'importe où",
+    "subheading": "Choisissez un nom pour votre hub. Tapez hub.brika.dev/monhub dans n'importe quel navigateur et votre trafic file directement vers le hub à la maison. Pas de redirection de ports, pas de VPN, pas de relais qui s'interpose.",
+    "bullets": {
+      "p2p": {
+        "title": "Une ligne directe avec votre hub",
+        "description": "WebRTC ouvre une connexion directe entre votre navigateur et le hub à la maison. Une fois établie, rien d'autre ne s'interpose. Ni nous, ni votre opérateur, ni personne."
+      },
+      "encrypted": {
+        "title": "Chiffré en transit",
+        "description": "Chaque octet voyage sur le chiffrement intégré de WebRTC (DTLS). Les sessions sont protégées par des tickets éphémères qui expirent au bout de 60 secondes, donc même une URL fuitée devient inutilisable presque immédiatement."
+      },
+      "nameBased": {
+        "title": "Un nom, pas une adresse",
+        "description": "Donnez à votre hub un identifiant court, comme un pseudo. Nous retenons à quel hub il correspond. Vous n'avez jamais à connaître son IP, à configurer du DNS dynamique, ni à vous soucier de l'endroit où vous êtes."
+      },
+      "noPortForward": {
+        "title": "Fonctionne derrière n'importe quel routeur",
+        "description": "Wi-Fi domestique, données mobiles, réseau d'un café, pare-feu d'entreprise : tout marche. Rien à rediriger, rien à configurer sur le routeur."
+      },
+      "selfHosted": {
+        "title": "Ou hébergez votre propre porte d'entrée",
+        "description": "Pas envie d'utiliser la nôtre ? Le protocole est ouvert. Hébergez un coordinateur sur la stack de votre choix : Bun, Node, Deno, un Cloudflare Worker, votre propre VPS. Votre hub ne parle qu'à lui, et vous êtes le seul à distribuer les tickets."
+      }
+    },
+    "diagram": {
+      "aria": "Schéma d'un navigateur se connectant à un hub Brika via WebRTC. Le coordinateur n'est utilisé que pendant le bref handshake.",
+      "browser": "Navigateur",
+      "browserSub": "n'importe où",
+      "coordinator": "Coordinateur",
+      "coordinatorSub": "associe le nom au hub",
+      "hub": "Hub",
+      "hubSub": "à la maison",
+      "exampleName": "monhub",
+      "step1": "1. Bref handshake",
+      "step2": "2. Connexion directe",
+      "dataChannelLabel": "lien direct, chiffré",
+      "caption": "Le coordinateur retrouve votre hub par son nom et vous présente. Ensuite, la conversation reste entre vous deux."
+    }
+  },
   "Plugins": {
     "badge": "{count, plural, one {# plugin disponible} other {# plugins disponibles}}",
     "heading": "Étendez avec des plugins",
@@ -128,10 +186,46 @@
     "description": "Brika est open source sous licence MIT. Lisez le code, forkez-le, contribuez. Il est à vous.",
     "viewOnGithub": "Voir sur GitHub"
   },
+  "Clay": {
+    "eyebrow": "Con\u00e7u avec Clay",
+    "heading": "Le kit UI derri\u00e8re Brika",
+    "description": "Clay est notre biblioth\u00e8que de composants React open source, son syst\u00e8me de tokens et ses th\u00e8mes. Chaque surface de Brika repose dessus, et vous pouvez l'utiliser dans vos propres apps.",
+    "visit": "Voir clay.brika.dev",
+    "github": "GitHub",
+    "layers": {
+      "primitives": "Primitives",
+      "tokens": "Tokens",
+      "themes": "Th\u00e8mes",
+      "components": "Composants"
+    },
+    "chips": {
+      "button": "Bouton",
+      "card": "Carte",
+      "switch": "Switch",
+      "dialog": "Dialogue",
+      "tabs": "Onglets",
+      "input": "Champ",
+      "select": "Select",
+      "tooltip": "Tooltip",
+      "badge": "Badge",
+      "slider": "Slider",
+      "avatar": "Avatar",
+      "checkbox": "Case",
+      "popover": "Popover",
+      "sheet": "Sheet",
+      "accordion": "Accordéon",
+      "alert": "Alerte",
+      "toast": "Toast",
+      "skeleton": "Skeleton",
+      "progress": "Progression",
+      "drawer": "Tiroir"
+    }
+  },
   "Footer": {
     "copyright": "\u00a9 {year} Brika Labs",
     "docs": "Docs",
     "github": "GitHub",
+    "clay": "Clay UI",
     "license": "Licence MIT"
   },
   "LocaleToggle": {

@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { github, site } from '@/lib/config';
+import { clay, github, site } from '@/lib/config';
 import { BrikaLogo } from './ui/brika-logo';
 
 export async function Footer() {
@@ -32,6 +32,14 @@ export async function Footer() {
             className="transition-colors hover:text-foreground"
           >
             {t('github')}
+          </a>
+          <a
+            href={clay.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-foreground"
+          >
+            {t('clay')}
           </a>
           <a
             href={github.licenseUrl}

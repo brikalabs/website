@@ -115,18 +115,19 @@ export function useBlinkingFace(): string {
   useEffect(() => {
     let id: ReturnType<typeof setTimeout>;
 
+    function flicker() {
+      const next = FACE_VARIANTS[Math.floor(Math.random() * FACE_VARIANTS.length)];
+      setFace(next);
+      id = setTimeout(restore, 180);
+    }
+
+    function restore() {
+      setFace(FACES.happy);
+      schedule();
+    }
+
     function schedule() {
-      id = setTimeout(
-        () => {
-          const next = FACE_VARIANTS[Math.floor(Math.random() * FACE_VARIANTS.length)];
-          setFace(next);
-          id = setTimeout(() => {
-            setFace(FACES.happy);
-            schedule();
-          }, 180);
-        },
-        2500 + Math.random() * 3000
-      );
+      id = setTimeout(flicker, 2500 + Math.random() * 3000);
     }
 
     schedule();

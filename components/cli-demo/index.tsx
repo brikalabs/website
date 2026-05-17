@@ -42,12 +42,11 @@ export function CliDemo() {
     if (!autoCycle) {
       return;
     }
-    const id = setInterval(() => {
-      setActive((cur) => {
-        const i = TABS.findIndex((x) => x.key === cur);
-        return TABS[(i + 1) % TABS.length].key;
-      });
-    }, VIEW_CYCLE_MS);
+    const advance = (cur: View): View => {
+      const i = TABS.findIndex((x) => x.key === cur);
+      return TABS[(i + 1) % TABS.length].key;
+    };
+    const id = setInterval(() => setActive(advance), VIEW_CYCLE_MS);
     return () => clearInterval(id);
   }, [autoCycle]);
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { C, Cyan, Dim, G, Green, Kbd, R, Red, Y, Yellow } from './colors';
+import { C, Cyan, Dim, G, Green, Kbd, R, Red, Yellow } from './colors';
 
 export type View = 'dashboard' | 'plugins' | 'workflows' | 'logs';
 
@@ -15,30 +15,23 @@ export const TABS: ReadonlyArray<{ key: View; label: string; idx: number }> = [
 /**
  * MenuBar — TUI tab strip. Each tab has a `[N] Label` row over an underline
  * row (`━` cyan for active, `─` dim for inactive), matching the real TUI's
- * <MenuBar> primitive. Click delegation via a single onClick on the wrapper
- * — children just carry `data-tab` attributes.
+ * <MenuBar> primitive. Native `<button>` per tab keeps keyboard/screen-reader
+ * support free.
  */
 export function MenuBar({ active, onPick }: Readonly<{ active: View; onPick: (v: View) => void }>) {
-  function onClick(e: React.MouseEvent<HTMLDivElement>) {
-    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-tab]');
-    const tab = el?.dataset.tab as View | undefined;
-    if (tab) {
-      onPick(tab);
-    }
-  }
-
   return (
-    <div className="cursor-pointer font-mono" onClick={onClick}>
+    <div className="font-mono">
       <div>
         {TABS.map((t, i) => {
           const label = `[${t.idx}] ${t.label}`;
           const isActive = t.key === active;
           return (
-            <span key={t.label}>
-              <span
-                data-tab={t.key}
+            <span key={t.key}>
+              <button
+                type="button"
+                onClick={() => onPick(t.key)}
                 className={cn(
-                  'transition-colors hover:text-foreground',
+                  'cursor-pointer bg-transparent p-0 font-inherit text-inherit transition-colors hover:text-foreground',
                   // font-medium instead of bold to keep monospace columns
                   // stable; visual emphasis comes from the cyan color +
                   // heavy ━ underline row below.
@@ -46,18 +39,18 @@ export function MenuBar({ active, onPick }: Readonly<{ active: View; onPick: (v:
                 )}
               >
                 {label}
-              </span>
+              </button>
               {i < TABS.length - 1 && '   '}
             </span>
           );
         })}
       </div>
-      <div>
+      <div aria-hidden>
         {TABS.map((t, i) => {
           const label = `[${t.idx}] ${t.label}`;
           const isActive = t.key === active;
           return (
-            <span key={t.label}>
+            <span key={t.key}>
               <span className={isActive ? C : 'text-muted-foreground'}>
                 {(isActive ? '━' : '─').repeat(label.length)}
               </span>

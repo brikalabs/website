@@ -37,7 +37,7 @@ export function useParticleBurst<T extends HTMLElement = HTMLElement>({
     if (!el) {
       return;
     }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
 

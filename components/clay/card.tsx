@@ -14,7 +14,7 @@ const LAYERS = ['primitives', 'tokens', 'themes', 'components'] as const;
 export function ClayCard() {
   const t = useTranslations('Clay');
   const { ref, visible } = useOnceVisible();
-  const tilt = useTilt3D<HTMLDivElement>(6);
+  const tiltRef = useTilt3D<HTMLDivElement>(6);
 
   return (
     <section
@@ -44,10 +44,7 @@ export function ClayCard() {
       <div className="relative grid items-center gap-10 px-6 py-12 md:grid-cols-[1fr_1.1fr] md:gap-12 md:px-12 md:py-14">
         {/* Visual */}
         <div
-          ref={tilt.ref}
-          onMouseEnter={tilt.onMouseEnter}
-          onMouseMove={tilt.onMouseMove}
-          onMouseLeave={tilt.onMouseLeave}
+          ref={tiltRef}
           className={cn(
             'clay-stack-wrapper relative flex items-center justify-center will-change-transform',
             visible ? 'animate-[card-enter_0.6s_ease-out_backwards]' : 'opacity-0'

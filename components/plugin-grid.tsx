@@ -84,7 +84,7 @@ function PluginIcon({
 
 function PluginCard({ plugin }: Readonly<{ plugin: Plugin }>) {
   const t = useTranslations('Plugins');
-  const { ref, onMouseEnter, onMouseMove, onMouseLeave } = useTilt3D<HTMLAnchorElement>(16);
+  const ref = useTilt3D<HTMLAnchorElement>(16);
 
   return (
     <a
@@ -93,9 +93,6 @@ function PluginCard({ plugin }: Readonly<{ plugin: Plugin }>) {
       target="_blank"
       rel="noopener noreferrer"
       className="tilt-card plugin-tilt group corner-squircle relative flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 will-change-transform"
-      onMouseEnter={onMouseEnter}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
     >
       <div className="tilt-card-glow pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="tilt-card-shine pointer-events-none absolute inset-0 overflow-hidden" />

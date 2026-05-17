@@ -41,7 +41,7 @@ export function SpotlightCards({
       return;
     }
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
 
@@ -105,10 +105,10 @@ export function SpotlightCards({
       });
     }
 
-    window.addEventListener('pointermove', onMove, { passive: true });
+    globalThis.addEventListener('pointermove', onMove, { passive: true });
     wrapper.addEventListener('pointerleave', onLeave);
     return () => {
-      window.removeEventListener('pointermove', onMove);
+      globalThis.removeEventListener('pointermove', onMove);
       wrapper.removeEventListener('pointerleave', onLeave);
       if (frame.current) {
         cancelAnimationFrame(frame.current);

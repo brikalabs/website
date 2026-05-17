@@ -23,9 +23,10 @@ interface Spark {
 
 /**
  * Wraps children with an absolute-positioned canvas that paints a burst of
- * radial spark lines at every click. The wrapper is `display: contents` style
- * (full width/height of parent) — wrap your CTA group, not a single button,
- * for the best feel.
+ * radial spark lines at every click. The wrapper has no interactive role —
+ * clicks pass through to the actual interactive children (buttons/links)
+ * and the canvas listens via a DOM-level listener attached in useEffect,
+ * so we don't paint a non-native onClick on the wrapping div.
  */
 export function ClickSpark({
   sparkColor = 'currentColor',
@@ -41,6 +42,8 @@ export function ClickSpark({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sparksRef = useRef<Spark[]>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const sparkCountRef = useRef(sparkCount);
+  sparkCountRef.current = sparkCount;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -50,7 +53,7 @@ export function ClickSpark({
     }
 
     let resizeTimeout: ReturnType<typeof setTimeout>;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
 
     const resizeCanvas = () => {
       const { width, height } = parent.getBoundingClientRect();
@@ -74,9 +77,32 @@ export function ClickSpark({
     ro.observe(parent);
     resizeCanvas();
 
+    const reducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)');
+    const target = canvas;
+    function onParentClick(e: MouseEvent) {
+      if (reducedMotion.matches) {
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const now = performance.now();
+      const count = sparkCountRef.current;
+      for (let i = 0; i < count; i++) {
+        sparksRef.current.push({
+          x,
+          y,
+          angle: (2 * Math.PI * i) / count,
+          startTime: now,
+        });
+      }
+    }
+    parent.addEventListener('click', onParentClick);
+
     return () => {
       ro.disconnect();
       clearTimeout(resizeTimeout);
+      parent.removeEventListener('click', onParentClick);
     };
   }, []);
 
@@ -106,7 +132,7 @@ export function ClickSpark({
       return;
     }
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
 
@@ -152,35 +178,8 @@ export function ClickSpark({
     return () => cancelAnimationFrame(animationId);
   }, [sparkColor, sparkSize, sparkRadius, duration, easeFunc, extraScale]);
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const now = performance.now();
-    for (let i = 0; i < sparkCount; i++) {
-      sparksRef.current.push({
-        x,
-        y,
-        angle: (2 * Math.PI * i) / sparkCount,
-        startTime: now,
-      });
-    }
-  };
-
   return (
-    <div
-      ref={wrapperRef}
-      onClick={handleClick}
-      onKeyDown={undefined}
-      className={className ?? 'relative inline-flex'}
-    >
+    <div ref={wrapperRef} className={className ?? 'relative inline-flex'}>
       <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-20" />
       {children}
     </div>

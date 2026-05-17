@@ -83,8 +83,8 @@ export function DotGridBackground({
       return;
     }
 
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const reduce = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
 
     let nodes: Node[] = [];
     let width = 0;

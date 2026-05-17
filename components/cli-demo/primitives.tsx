@@ -19,7 +19,9 @@ export function CharLine({ width, segs }: Readonly<{ width: number; segs: Seg[] 
   return (
     <div>
       {segs.map((s, i) => (
-        <span key={i} className={s.className}>
+        // Segments are positional pieces of one character-aligned line and
+        // have no stable identity; the index is the correct key here.
+        <span key={`${i}-${s.text}`} className={s.className}>
           {s.text}
         </span>
       ))}
@@ -84,20 +86,22 @@ export function Pane({
   const usedNonFill = 2 + iconBlock + titleBlock + rightBlock + 1;
   const dashCount = Math.max(2, width - usedNonFill);
 
-  const topSegs: Seg[] = [{ text: '╭─', className: BORDER }];
-  if (icon) {
-    topSegs.push({ text: ` ${icon}`, className: iconClass });
-  }
   // font-medium (500) instead of bold (700) — most monospace fonts keep
   // weight 100–500 at constant char width but widen at 600+. Visual contrast
   // is still there against the muted border chars around it.
-  topSegs.push({ text: ` ${title} `, className: 'font-medium' });
-  topSegs.push({ text: '─'.repeat(dashCount), className: BORDER });
-  if (right) {
-    topSegs.push({ text: ' ', className: BORDER });
-    topSegs.push({ text: right.text, className: right.className });
-  }
-  topSegs.push({ text: '╮', className: BORDER });
+  const topSegs: Seg[] = [
+    { text: '╭─', className: BORDER },
+    ...(icon ? [{ text: ` ${icon}`, className: iconClass }] : []),
+    { text: ` ${title} `, className: 'font-medium' },
+    { text: '─'.repeat(dashCount), className: BORDER },
+    ...(right
+      ? [
+          { text: ' ', className: BORDER },
+          { text: right.text, className: right.className },
+        ]
+      : []),
+    { text: '╮', className: BORDER },
+  ];
 
   const blankRow: Seg[] = [
     { text: '│', className: BORDER },
@@ -112,7 +116,13 @@ export function Pane({
       <CharLine width={width} segs={topSegs} />
       <CharLine width={width} segs={blankRow} />
       {rows.map((row, i) => (
-        <CharLine key={i} width={width} segs={wrapBody(row, width)} />
+        // Rows are positional within a static pane and have no stable id;
+        // we hash the row text into the key so re-orders remount correctly.
+        <CharLine
+          key={`${i}-${row.map((s) => s.text).join('')}`}
+          width={width}
+          segs={wrapBody(row, width)}
+        />
       ))}
       {footer && (
         <>

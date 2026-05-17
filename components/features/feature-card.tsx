@@ -17,7 +17,7 @@ export function FeatureCard({
   index: number;
 }>) {
   const t = useTranslations('Features');
-  const { ref: tiltRef, onMouseEnter, onMouseMove, onMouseLeave } = useTilt3D<HTMLDivElement>(8);
+  const tiltRef = useTilt3D<HTMLDivElement>(8);
   const particleRef = useParticleBurst<HTMLDivElement>({
     color: feature.rgb,
     count: feature.hero ? 10 : 6,
@@ -49,9 +49,6 @@ export function FeatureCard({
             } as React.CSSProperties)
           : undefined
       }
-      onMouseEnter={onMouseEnter}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
     >
       {/* Cursor-following inner glow */}
       <div

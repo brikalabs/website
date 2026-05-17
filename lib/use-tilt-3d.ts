@@ -10,73 +10,70 @@ import { useEffect, useRef } from 'react';
  * transform: perspective(600px) rotateX(calc(var(--rx)*1deg)) rotateY(calc(var(--ry)*1deg));
  * ```
  *
- * The rect is snapshotted on pointer enter and reused for the whole hover
- * session. `getBoundingClientRect()` returns the element's *transformed* box,
- * so reading it every frame creates a feedback loop (tilt changes rect → next
- * frame reads a different rect → tilt jitters). Snapshotting breaks the loop.
+ * Listeners are attached via `addEventListener` in `useEffect` rather than
+ * React `onMouse*` props — that way the consumer's wrapping div has no
+ * interactive event handlers and Sonar's S6848 / a11y rules don't flag it.
  *
  * Mousemove is rAF-throttled: regardless of pointer sample rate (60–240Hz),
  * style writes happen at most once per frame.
  */
 export function useTilt3D<T extends HTMLElement = HTMLElement>(intensity = 10) {
   const ref = useRef<T>(null);
-  const frame = useRef(0);
-  const coords = useRef({ x: 0, y: 0 });
-  const rect = useRef<DOMRect | null>(null);
 
   useEffect(() => {
-    return () => {
-      if (frame.current) {
-        cancelAnimationFrame(frame.current);
-      }
-    };
-  }, []);
-
-  function onMouseEnter(e: React.MouseEvent<T>) {
     const el = ref.current;
     if (!el) {
       return;
     }
-    rect.current = el.getBoundingClientRect();
-    coords.current.x = e.clientX;
-    coords.current.y = e.clientY;
-  }
 
-  function onMouseMove(e: React.MouseEvent<T>) {
-    coords.current.x = e.clientX;
-    coords.current.y = e.clientY;
-    if (frame.current) {
-      return;
+    let frame = 0;
+    let lastX = 0;
+    let lastY = 0;
+
+    function onMove(e: MouseEvent) {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      if (frame) {
+        return;
+      }
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (!el) {
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        const x = (lastX - rect.left) / rect.width;
+        const y = (lastY - rect.top) / rect.height;
+        el.style.setProperty('--mx', `${x}`);
+        el.style.setProperty('--my', `${y}`);
+        el.style.setProperty('--rx', `${(y - 0.5) * -intensity}`);
+        el.style.setProperty('--ry', `${(x - 0.5) * intensity}`);
+      });
     }
-    frame.current = requestAnimationFrame(() => {
-      frame.current = 0;
-      const el = ref.current;
+
+    function onLeave() {
+      if (frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
       if (!el) {
         return;
       }
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      el.style.setProperty('--mx', `${x}`);
-      el.style.setProperty('--my', `${y}`);
-      el.style.setProperty('--rx', `${(y - 0.5) * -intensity}`);
-      el.style.setProperty('--ry', `${(x - 0.5) * intensity}`);
-    });
-  }
-
-  function onMouseLeave() {
-    if (frame.current) {
-      cancelAnimationFrame(frame.current);
-      frame.current = 0;
+      el.style.setProperty('--rx', '0');
+      el.style.setProperty('--ry', '0');
     }
-    rect.current = null;
-    const el = ref.current;
-    if (!el) {
-      return;
-    }
-    el.style.setProperty('--rx', '0');
-    el.style.setProperty('--ry', '0');
-  }
 
-  return { ref, onMouseEnter, onMouseMove, onMouseLeave } as const;
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+
+    return () => {
+      if (frame) {
+        cancelAnimationFrame(frame);
+      }
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+    };
+  }, [intensity]);
+
+  return ref;
 }

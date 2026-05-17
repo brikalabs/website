@@ -4,6 +4,10 @@ import { SiGithub } from 'react-icons/si';
 import { github } from '@/lib/config';
 import { BrikaLogo } from './ui/brika-logo';
 import { Button } from './ui/button';
+import { ClickSpark } from './ui/click-spark';
+import { DotGridBackground } from './ui/dot-grid-bg';
+import { GradientFlowText } from './ui/gradient-flow-text';
+import { StarBorder } from './ui/star-border';
 
 interface HeroProps {
   release?: {
@@ -17,36 +21,34 @@ export async function Hero({ release }: Readonly<HeroProps>) {
 
   return (
     <section className="hero-parallax relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6">
-      {/* Aurora blobs */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div
-          className="aurora-blob absolute top-[15%] left-[20%] size-[500px] bg-primary md:size-[700px]"
-          style={{
-            animation: 'aurora-drift-1 20s ease-in-out infinite',
-          }}
-        />
-        <div
-          className="aurora-blob absolute top-[40%] right-[15%] size-[400px] bg-accent md:size-[600px]"
-          style={{
-            animation: 'aurora-drift-2 25s ease-in-out infinite',
-          }}
-        />
-        <div
-          className="aurora-blob absolute bottom-[10%] left-[40%] size-[450px] bg-primary md:size-[650px]"
-          style={{
-            animation: 'aurora-drift-3 18s ease-in-out infinite',
-          }}
+      {/* Network mesh — vignette mask fades dots under the text so the
+          content stays readable; mesh stays visible around the edges. */}
+      <div className="mask-[radial-gradient(ellipse_60%_55%_at_center,transparent_0%,rgba(0,0,0,0.25)_45%,black_85%)] pointer-events-none absolute inset-0 -z-10">
+        <DotGridBackground
+          className="absolute inset-0 h-full w-full"
+          density={60}
+          connectionDistance={150}
+          driftAmplitude={4}
+          breatheInterval={2400}
         />
       </div>
 
-      {/* Dot grid */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-[0.04]" />
+      {/* Soft scrim behind the content to guarantee text contrast in light
+          mode, even when a wavefront pulse passes through. */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            'radial-gradient(ellipse 55% 50% at center, var(--background) 0%, transparent 65%)',
+          opacity: 0.55,
+        }}
+      />
 
       <div className="max-w-4xl text-center">
         {/* Hero logo */}
         <div className="reveal-up mb-10 flex justify-center" style={{ animationDelay: '50ms' }}>
-          <div className="hero-icon corner-squircle rounded-full p-0.5">
-            <div className="corner-squircle relative z-10 flex size-20 items-center justify-center rounded-full bg-black sm:size-24">
+          <div className="hero-icon corner-squircle rounded-[28%] p-0.5">
+            <div className="corner-squircle relative z-10 flex size-20 items-center justify-center rounded-[28%] bg-black sm:size-24">
               <BrikaLogo className="size-16 text-white sm:size-20" />
             </div>
           </div>
@@ -105,12 +107,12 @@ export async function Hero({ release }: Readonly<HeroProps>) {
           </span>
           <span className="block overflow-hidden pb-1">
             <span
-              className="hero-gradient text-reveal-word"
+              className="text-reveal-word"
               style={{
                 animationDelay: '770ms',
               }}
             >
-              {t('titleLine2')}
+              <GradientFlowText text={t('titleLine2')} speed={9} />
             </span>
           </span>
         </h1>
@@ -125,16 +127,20 @@ export async function Hero({ release }: Readonly<HeroProps>) {
         </p>
 
         {/* CTAs */}
-        <div
-          className="reveal-up mt-10 flex flex-wrap items-center justify-center gap-4"
-          style={{
-            animationDelay: '1100ms',
-          }}
+        <ClickSpark
+          sparkColor="oklch(0.7 0.16 265)"
+          sparkRadius={22}
+          sparkCount={12}
+          className="reveal-up relative mt-10 flex flex-wrap items-center justify-center gap-4"
         >
-          <Button href="#install" variant="filled" size="lg" className="group">
-            {t('getStarted')}
-            <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
-          </Button>
+          <span style={{ animationDelay: '1100ms' }}>
+            <StarBorder className="rounded-full" color="oklch(0.85 0.16 200)" speed="5s">
+              <Button href="#install" variant="filled" size="lg" className="group rounded-full">
+                {t('getStarted')}
+                <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
+              </Button>
+            </StarBorder>
+          </span>
           <Button
             href={github.url}
             target="_blank"
@@ -145,7 +151,7 @@ export async function Hero({ release }: Readonly<HeroProps>) {
             <SiGithub className="size-4" />
             {t('github')}
           </Button>
-        </div>
+        </ClickSpark>
       </div>
 
       {/* Scroll hint */}

@@ -36,6 +36,11 @@ export const registry = {
   verifiedPluginsUrl: 'https://registry.brika.dev/verified-plugins.json',
 } as const;
 
+export const clay = {
+  url: 'https://clay.brika.dev/',
+  repoUrl: 'https://github.com/brikalabs/clay',
+} as const;
+
 /** Plugins hidden from the public landing page (demos, examples, internal). */
 export const excludedPlugins = new Set<string>([
   '@brika/plugin-example-echo',

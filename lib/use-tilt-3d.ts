@@ -26,13 +26,17 @@ export function useTilt3D<T extends HTMLElement = HTMLElement>(intensity = 10) {
 
   useEffect(() => {
     return () => {
-      if (frame.current) cancelAnimationFrame(frame.current);
+      if (frame.current) {
+        cancelAnimationFrame(frame.current);
+      }
     };
   }, []);
 
   function onMouseEnter(e: React.MouseEvent<T>) {
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return;
+    }
     rect.current = el.getBoundingClientRect();
     coords.current.x = e.clientX;
     coords.current.y = e.clientY;
@@ -41,7 +45,9 @@ export function useTilt3D<T extends HTMLElement = HTMLElement>(intensity = 10) {
   function onMouseMove(e: React.MouseEvent<T>) {
     coords.current.x = e.clientX;
     coords.current.y = e.clientY;
-    if (frame.current) return;
+    if (frame.current) {
+      return;
+    }
     frame.current = requestAnimationFrame(() => {
       frame.current = 0;
       const el = ref.current;

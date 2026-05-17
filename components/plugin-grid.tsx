@@ -82,15 +82,9 @@ function PluginIcon({
   );
 }
 
-function PluginCard({
-  plugin,
-  duplicate = false,
-}: Readonly<{
-  plugin: Plugin;
-  duplicate?: boolean;
-}>) {
+function PluginCard({ plugin }: Readonly<{ plugin: Plugin }>) {
   const t = useTranslations('Plugins');
-  const { ref, onMouseEnter, onMouseMove, onMouseLeave } = useTilt3D<HTMLAnchorElement>();
+  const { ref, onMouseEnter, onMouseMove, onMouseLeave } = useTilt3D<HTMLAnchorElement>(16);
 
   return (
     <a
@@ -98,7 +92,8 @@ function PluginCard({
       href={`${npm.packageUrl}/${plugin.name}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="tilt-card group corner-squircle relative flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 will-change-transform"
+      className="tilt-card plugin-tilt group corner-squircle relative flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 will-change-transform"
+      onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
@@ -143,67 +138,6 @@ function PluginCard({
   );
 }
 
-/* ── Smooth playback rate lerp ── */
-function useMarqueeHover(trackRef: React.RefObject<HTMLDivElement | null>) {
-  useEffect(() => {
-    const track: HTMLDivElement | null = trackRef.current;
-    if (!track) {
-      return;
-    }
-    const el = track;
-
-    let target = 1;
-    let current = 1;
-    let raf = 0;
-
-    function tick() {
-      current += (target - current) * 0.07;
-
-      const anim = el.getAnimations()[0];
-      if (Math.abs(current - target) < 0.005) {
-        current = target;
-        if (anim) {
-          anim.playbackRate = current;
-        }
-        raf = 0;
-        return;
-      }
-
-      if (anim) {
-        anim.playbackRate = current;
-      }
-      raf = requestAnimationFrame(tick);
-    }
-
-    function startLerp() {
-      if (!raf) {
-        raf = requestAnimationFrame(tick);
-      }
-    }
-
-    const row = track.parentElement;
-    const enter = () => {
-      target = 0;
-      startLerp();
-    };
-    const leave = () => {
-      target = 1;
-      startLerp();
-    };
-
-    row?.addEventListener('mouseenter', enter);
-    row?.addEventListener('mouseleave', leave);
-
-    return () => {
-      if (raf) {
-        cancelAnimationFrame(raf);
-      }
-      row?.removeEventListener('mouseenter', enter);
-      row?.removeEventListener('mouseleave', leave);
-    };
-  }, [trackRef]);
-}
-
 /* ── Marquee row ── */
 function MarqueeRow({
   plugins,
@@ -233,7 +167,7 @@ function MarqueeRow({
             tilt. Cards use tabIndex={-1} to stay out of tab order. */}
         <div className="marquee-set" aria-hidden="true">
           {cards.map((plugin, i) => (
-            <PluginCard key={`b-${plugin.name}-${i}`} plugin={plugin} duplicate />
+            <PluginCard key={`b-${plugin.name}-${i}`} plugin={plugin} />
           ))}
         </div>
       </div>

@@ -2,6 +2,8 @@ import { headers } from 'next/headers';
 import { setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 import { Bricks } from '@/components/bricks';
+import { Clay } from '@/components/clay';
+import { CliDemo } from '@/components/cli-demo';
 import { Features } from '@/components/features';
 import { Footer } from '@/components/footer';
 import { Hero } from '@/components/hero';
@@ -9,6 +11,7 @@ import { Nav } from '@/components/nav';
 import { OpenSource } from '@/components/open-source';
 import { Plugins } from '@/components/plugins';
 import { QuickStart } from '@/components/quick-start';
+import { RemoteAccess } from '@/components/remote-access';
 import type { Locale } from '@/i18n/routing';
 import { fetchLatestRelease } from '@/lib/github';
 import { fetchWeatherData } from '@/lib/weather';
@@ -78,13 +81,19 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
         <Divider />
         <Features />
         <Divider />
+        <CliDemo />
+        <Divider />
         <Bricks weather={weather} />
+        <Divider />
+        <RemoteAccess />
         <Divider />
         <Suspense fallback={<PluginsSkeleton />}>
           <Plugins locale={locale} />
         </Suspense>
         <Divider />
         <OpenSource />
+        <Divider />
+        <Clay />
       </main>
       <Footer />
     </>

@@ -22,7 +22,7 @@ export async function Plugins({ locale }: Readonly<{ locale: Locale }>) {
     <AnimatedSection id="plugins" className="overflow-x-clip py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-6 flex justify-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm backdrop-blur-2xl">
             <Puzzle className="size-3.5" />
             {t('badge', { count: plugins.length })}
           </div>

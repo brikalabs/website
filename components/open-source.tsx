@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { SiGithub } from 'react-icons/si';
 import { github } from '@/lib/config';
 import { AnimatedSection } from './ui/animated-section';
+import { BorderGlow } from './ui/border-glow';
 import { Button } from './ui/button';
 
 export async function OpenSource() {
@@ -11,7 +12,17 @@ export async function OpenSource() {
   return (
     <AnimatedSection className="py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="corner-squircle relative overflow-hidden rounded-3xl border border-border bg-surface px-6 py-16 text-center md:px-16">
+        <BorderGlow
+          colorGlow
+          idleOpacity={0.22}
+          borderRadius={24}
+          glowRadius={48}
+          edgeSensitivity={22}
+          glowColor="270 70 75"
+          colors={['#c084fc', '#f472b6', '#38bdf8']}
+          className="corner-squircle"
+          innerClassName="corner-squircle relative overflow-hidden px-6 py-16 text-center md:px-16"
+        >
           {/* Aurora glow */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
             <div
@@ -31,7 +42,7 @@ export async function OpenSource() {
           </div>
 
           <div className="relative">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm backdrop-blur-2xl">
               <Heart className="size-3.5" />
               {t('badge')}
             </div>
@@ -50,7 +61,7 @@ export async function OpenSource() {
               {t('viewOnGithub')}
             </Button>
           </div>
-        </div>
+        </BorderGlow>
       </div>
     </AnimatedSection>
   );

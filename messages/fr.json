@@ -15,7 +15,9 @@
     "titleLine1Word2": "Run.",
     "titleLine1Word3": "Integrate.",
     "titleLine2": "Keep Automating.",
-    "tagline": "Une plateforme d'automatisation auto-hébergée qui tourne sur votre machine. Un binaire, pas de cloud, contrôle total.",
+    "subheadingBefore": "Pour vos",
+    "subheadingNouns": ["workflows.", "homelab.", "scripts.", "cron jobs.", "intégrations."],
+    "tagline": "La plateforme d'automatisation auto-hébergée. Un binaire, pas de cloud, contrôle total.",
     "getStarted": "Commencer",
     "github": "GitHub"
   },

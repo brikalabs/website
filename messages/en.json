@@ -15,7 +15,9 @@
     "titleLine1Word2": "Run.",
     "titleLine1Word3": "Integrate.",
     "titleLine2": "Keep Automating.",
-    "tagline": "A self-hosted automation hub that runs on your machine. One binary, no cloud, full control.",
+    "subheadingBefore": "For your",
+    "subheadingNouns": ["workflows.", "homelab.", "scripts.", "cron jobs.", "integrations."],
+    "tagline": "The self-hosted automation hub. One binary, no cloud, full control.",
     "getStarted": "Get started",
     "github": "GitHub"
   },

@@ -192,7 +192,7 @@
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
+    filter: none;
   }
 }
 
@@ -297,18 +297,6 @@
   }
   100% {
     translate: 120% 0;
-  }
-}
-
-/* With 2N cards as direct flex siblings (uniform gap), the track is
-   `2N*card + (2N-1)*gap` wide and we need to advance by `N*(card+gap)` for a
-   seamless wrap. That's exactly -50% minus half a gap. */
-@keyframes marquee-scroll {
-  from {
-    translate: 0 0;
-  }
-  to {
-    translate: calc(-50% - var(--marquee-gap) / 2) 0;
   }
 }
 
@@ -578,70 +566,6 @@
     animation: card-shine-sweep 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  /* ── Plugin marquee ── */
-  .marquee-container {
-    --marquee-gap: 1.25rem;
-    --marquee-fade-width: 12rem;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding-block: 1.5rem;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  /* Opaque page-color gradients painted over card edges — no mask, no compositor
-     quirks. z-index above rows (which are z:auto) ensures they cover any tilted
-     card poking into the fade zone. */
-  .marquee-container::before,
-  .marquee-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: var(--marquee-fade-width);
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .marquee-container::before {
-    left: 0;
-    background: linear-gradient(to right, var(--background), transparent);
-  }
-
-  .marquee-container::after {
-    right: 0;
-    background: linear-gradient(to left, var(--background), transparent);
-  }
-
-  .marquee-row {
-    overflow: visible;
-  }
-
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    gap: var(--marquee-gap);
-    animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
-    will-change: transform;
-  }
-
-  /* `display: contents` dissolves the wrapper — cards become direct flex
-     children of .marquee-track so the single gap applies uniformly to all 2N
-     siblings (required for the seamless loop math). */
-  .marquee-set {
-    display: contents;
-  }
-
-  .marquee-reverse {
-    animation-direction: reverse;
-  }
-
-  .marquee-row:hover .marquee-track {
-    animation-play-state: paused;
-  }
-
   /* ── Button border glow ── */
   .btn-glow {
     transition:
@@ -788,11 +712,18 @@
      Two animations layered: a one-shot entry pop, and an infinite gentle
      drift. The chip rests at its target opacity/scale via the entry's
      `backwards` fill and the float keeping `--chip-scale` baked in. */
+  /* Compositing optimization: skip render work when the whole stack is
+     off-screen. The intrinsic-size hint keeps scroll position stable. */
+  .clay-stack {
+    content-visibility: auto;
+    contain-intrinsic-size: 360px 360px;
+    contain: layout paint style;
+  }
+
   .clay-chip {
     transform-origin: center;
     opacity: var(--chip-opacity, 1);
     transform: scale(var(--chip-scale, 1));
-    will-change: transform, opacity;
     animation:
       chip-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards,
       chip-float 9s ease-in-out infinite;
@@ -1031,7 +962,6 @@
   .aurora-blob,
   .btn-rotate::before,
   .hero-icon::before,
-  .marquee-track,
   .terminal-cursor,
   .scroll-hint,
   .gradient-flow-text,

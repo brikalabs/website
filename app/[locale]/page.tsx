@@ -30,7 +30,7 @@ function PluginsSkeleton() {
           <div className="h-5 w-80 animate-pulse rounded-lg bg-muted" />
         </div>
       </div>
-      <div className="marquee-container space-y-5">
+      <div className="flex flex-col gap-4 py-6">
         {[0, 1].map((row) => (
           <div key={row} className="flex gap-5 overflow-hidden">
             {Array.from(
@@ -40,7 +40,7 @@ function PluginsSkeleton() {
               (_, i) => (
                 <div
                   key={i}
-                  className="corner-squircle h-44 w-64 shrink-0 animate-pulse rounded-2xl border border-border bg-surface"
+                  className="corner-squircle h-52 w-64 shrink-0 animate-pulse rounded-2xl border border-border bg-surface"
                 />
               )
             )}

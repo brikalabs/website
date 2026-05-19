@@ -1,0 +1,211 @@
+/* Wrapped in @layer components so Tailwind utilities (position, transform,
+   etc.) can still override the base layout properties on .border-glow-card
+   via the className prop. */
+@layer components {
+  /* Spin uses JS to drive --cursor-angle in a rAF loop (see border-glow.tsx),
+     so it works without @property interpolation. This class just forces the
+     layers visible regardless of cursor proximity. */
+  .border-glow-card.spin {
+    --edge-proximity: 100;
+  }
+
+  .border-glow-card.spin::before,
+  .border-glow-card.spin::after,
+  .border-glow-card.spin > .edge-light {
+    opacity: 1;
+    transition: none;
+  }
+
+  .border-glow-card {
+    --edge-proximity: 0;
+    --cursor-angle: 45deg;
+    --edge-sensitivity: 30;
+    --color-sensitivity: calc(var(--edge-sensitivity) + 20);
+    --border-radius: 28px;
+    --glow-padding: 40px;
+    --cone-spread: 25;
+    --idle-opacity: 0;
+    /* Themed perimeter + drop shadow. `color-mix` with --foreground gives
+       a properly-contrasted edge in both light and dark mode (foreground
+       is dark text in light mode, light text in dark mode). */
+    --card-edge: color-mix(in oklch, var(--foreground) 14%, transparent);
+    --card-shadow:
+      0 1px 2px -1px oklch(0 0 0 / 0.08), 0 6px 16px -4px oklch(0 0 0 / 0.1),
+      0 14px 32px -10px oklch(0 0 0 / 0.08);
+
+    position: relative;
+    border-radius: var(--border-radius);
+    isolation: isolate;
+    /* No `transform` here — would override .tilt-card's perspective+rotate.
+       `isolation: isolate` is enough to form a stacking context. */
+    /* No padding — inner content fills edge-to-edge so its rounded corners
+       match the wrapper exactly. The ::before pseudo extends 1px outside
+       (inset: -1) to paint the gradient ring just beyond the card edge. */
+    background: var(--card-bg, var(--surface));
+    box-shadow:
+      0 0 0 1px var(--card-edge),
+      var(--card-shadow);
+  }
+
+  /* Stronger drop shadow in dark mode (warmer black on dark surface
+     barely reads otherwise). */
+  .dark .border-glow-card {
+    --card-shadow:
+      0 1px 2px -1px oklch(0 0 0 / 0.4), 0 6px 16px -6px oklch(0 0 0 / 0.3),
+      0 16px 32px -12px oklch(0 0 0 / 0.25);
+  }
+
+  .border-glow-card::before,
+  .border-glow-card::after,
+  .border-glow-card > .edge-light {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    /* corner-shape isn't inherited like border-radius — re-apply it so the
+       gradient ring matches the card's squircle silhouette. */
+    corner-shape: inherit;
+    transition: opacity 0.25s ease-out;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .border-glow-card:not(:hover):not(.sweep-active):not(.spin)::before {
+    opacity: var(--idle-opacity, 0);
+    /* Show the full ring (not just a cone slice) at idle. */
+    mask-image: none;
+    transition: opacity 0.75s ease-in-out;
+  }
+  .border-glow-card:not(:hover):not(.sweep-active):not(.spin)::after,
+  .border-glow-card:not(:hover):not(.sweep-active):not(.spin) > .edge-light {
+    opacity: 0;
+    transition: opacity 0.75s ease-in-out;
+  }
+
+  /* colored mesh-gradient border — sits just OUTSIDE the card so inner
+     content can fill the card edge-to-edge without a visible radius gap.
+     border-radius is bumped by 1px to keep the outer curve concentric. */
+  .border-glow-card::before {
+    inset: -1px;
+    border: 1px solid transparent;
+    border-radius: calc(var(--border-radius) + 1px);
+    background:
+      linear-gradient(var(--card-bg, var(--surface)) 0 100%) padding-box,
+      linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+      var(--gradient-one) border-box,
+      var(--gradient-two) border-box,
+      var(--gradient-three) border-box,
+      var(--gradient-four) border-box,
+      var(--gradient-five) border-box,
+      var(--gradient-six) border-box,
+      var(--gradient-seven) border-box,
+      var(--gradient-base) border-box;
+
+    opacity: max(
+      var(--idle-opacity, 0),
+      calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)))
+    );
+
+    mask-image: conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+  }
+
+  /* colored mesh-gradient background fill near edges */
+  .border-glow-card::after {
+    border: 1px solid transparent;
+    background:
+      var(--gradient-one) padding-box,
+      var(--gradient-two) padding-box,
+      var(--gradient-three) padding-box,
+      var(--gradient-four) padding-box,
+      var(--gradient-five) padding-box,
+      var(--gradient-six) padding-box,
+      var(--gradient-seven) padding-box,
+      var(--gradient-base) padding-box;
+
+    mask-image:
+      linear-gradient(to bottom, black, black),
+      radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+      radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+      radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+      conic-gradient(
+        from var(--cursor-angle) at center,
+        transparent 5%,
+        black 15%,
+        black 85%,
+        transparent 95%
+      );
+
+    mask-composite: subtract, add, add, add, add, add;
+    opacity: calc(
+      var(--fill-opacity, 0.5) *
+      (var(--edge-proximity) - var(--color-sensitivity)) /
+      (100 - var(--color-sensitivity))
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  /* outer glow layer */
+  .border-glow-card > .edge-light {
+    inset: calc(var(--glow-padding) * -1);
+    z-index: 1;
+
+    mask-image: conic-gradient(
+      from var(--cursor-angle) at center,
+      black 2.5%,
+      transparent 10%,
+      transparent 90%,
+      black 97.5%
+    );
+
+    opacity: calc(
+      (var(--edge-proximity) - var(--edge-sensitivity)) /
+      (100 - var(--edge-sensitivity))
+    );
+    mix-blend-mode: plus-lighter;
+  }
+
+  .border-glow-card > .edge-light::before {
+    content: "";
+    position: absolute;
+    inset: var(--glow-padding);
+    border-radius: inherit;
+    corner-shape: inherit;
+    box-shadow:
+      inset 0 0 0 1px var(--glow-color),
+      inset 0 0 1px 0 var(--glow-color-60),
+      inset 0 0 3px 0 var(--glow-color-50),
+      inset 0 0 6px 0 var(--glow-color-40),
+      inset 0 0 15px 0 var(--glow-color-30),
+      inset 0 0 25px 2px var(--glow-color-20),
+      inset 0 0 50px 2px var(--glow-color-10),
+      0 0 1px 0 var(--glow-color-60),
+      0 0 3px 0 var(--glow-color-50),
+      0 0 6px 0 var(--glow-color-40),
+      0 0 15px 0 var(--glow-color-30),
+      0 0 25px 2px var(--glow-color-20),
+      0 0 50px 2px var(--glow-color-10);
+  }
+
+  .border-glow-inner {
+    position: relative;
+    z-index: 0;
+    border-radius: inherit;
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .border-glow-card::before,
+  .border-glow-card::after,
+  .border-glow-card > .edge-light {
+    transition: none;
+  }
+}

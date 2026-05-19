@@ -9,6 +9,7 @@ import 'react-grid-layout/css/styles.css';
 import type { WeatherData } from '@/lib/weather';
 import { WeatherContext } from './bricks/weather-context';
 import { AnimatedSection } from './ui/animated-section';
+import { BorderGlow } from './ui/border-glow';
 
 const GAP = 8;
 const COLS = 3;
@@ -96,7 +97,17 @@ function BrickCard({
   const Icon = brickIcons[id];
 
   return (
-    <div className="group corner-squircle relative flex h-full select-none flex-col overflow-hidden rounded-xl border border-border bg-surface transition-shadow hover:shadow-md">
+    <BorderGlow
+      colorGlow
+      idleOpacity={0.2}
+      borderRadius={12}
+      glowRadius={14}
+      edgeSensitivity={45}
+      glowIntensity={0.7}
+      glowColor="220 70 75"
+      className="corner-squircle h-full"
+      innerClassName="corner-squircle group relative flex h-full select-none flex-col overflow-hidden"
+    >
       <div className="flex items-center gap-1.5 px-2.5 pt-2 pb-1.5">
         <Icon className="size-3.5 shrink-0 text-muted-foreground" />
         <span className="flex-1 truncate font-medium text-[11px] text-muted-foreground">
@@ -113,7 +124,7 @@ function BrickCard({
           </Suspense>
         )}
       </div>
-    </div>
+    </BorderGlow>
   );
 }
 

@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { BorderGlow } from './border-glow';
 
 function TrafficLights() {
   return (
@@ -23,11 +24,16 @@ export function Terminal({
   className?: string;
 }>) {
   return (
-    <div
-      className={cn(
-        'terminal-glow overflow-hidden rounded-xl border border-code-border bg-code-bg',
-        className
-      )}
+    <BorderGlow
+      colorGlow
+      idleOpacity={0.22}
+      borderRadius={12}
+      glowRadius={28}
+      edgeSensitivity={32}
+      glowColor="220 70 65"
+      backgroundColor="var(--code-bg)"
+      className={cn('terminal-glow corner-squircle', className)}
+      innerClassName="corner-squircle overflow-hidden"
     >
       <div className="flex flex-wrap items-center gap-2 border-code-border border-b px-3 py-2.5 sm:px-4">
         <TrafficLights />
@@ -36,7 +42,7 @@ export function Terminal({
       <div className="overflow-x-auto px-4 py-4 font-mono text-sm leading-relaxed sm:px-5 sm:py-5">
         {children}
       </div>
-    </div>
+    </BorderGlow>
   );
 }
 

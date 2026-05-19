@@ -2,9 +2,8 @@
 
 import { ArrowRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useTilt3D } from '@/lib/use-tilt-3d';
 import { cn } from '@/lib/utils';
-import { useParticleBurst } from '../ui/particle-burst';
+import { BorderGlow } from '../ui/border-glow';
 import type { Feature } from './features-data';
 
 export function FeatureCard({
@@ -17,52 +16,39 @@ export function FeatureCard({
   index: number;
 }>) {
   const t = useTranslations('Features');
-  const tiltRef = useTilt3D<HTMLDivElement>(8);
-  const particleRef = useParticleBurst<HTMLDivElement>({
-    color: feature.rgb,
-    count: feature.hero ? 10 : 6,
-    size: 3,
-    spread: feature.hero ? 110 : 80,
-    duration: 1800,
-  });
-
   const Icon = feature.icon;
 
   return (
-    <div
-      ref={(el) => {
-        tiltRef.current = el;
-        particleRef.current = el;
-      }}
-      data-spotlight-card
+    <BorderGlow
+      tilt
+      colorGlow
+      particles
+      idleOpacity={0.2}
+      particlesColor={feature.rgb}
+      particlesCount={feature.hero ? 10 : 6}
+      colorGlowAccent={`color-mix(in oklch, ${feature.color} 15%, transparent)`}
+      glowColor={feature.hsl}
+      colors={feature.mesh}
+      borderRadius={16}
+      glowRadius={32}
+      edgeSensitivity={35}
       className={cn(
-        'spotlight-card tilt-card feature-card group corner-squircle relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-6 will-change-transform',
-        feature.hero && 'md:col-span-2 md:p-8',
+        'spotlight-card feature-card corner-squircle',
+        feature.hero && 'md:col-span-2',
         visible ? 'animate-[card-enter_0.5s_ease-out_backwards]' : 'opacity-0'
       )}
+      innerClassName={cn(
+        'corner-squircle relative flex h-full flex-col overflow-hidden rounded-[inherit] p-6',
+        feature.hero && 'md:p-8'
+      )}
       style={
-        visible
-          ? ({
-              animationDelay: `${250 + index * 120}ms`,
-              '--card-color': feature.color,
-              '--spotlight-glow': feature.rgb,
-            } as React.CSSProperties)
-          : undefined
+        {
+          ...(visible ? { animationDelay: `${250 + index * 120}ms` } : null),
+          '--card-color': feature.color,
+          '--spotlight-glow': feature.rgb,
+        } as React.CSSProperties
       }
     >
-      {/* Cursor-following inner glow */}
-      <div
-        className="tilt-card-glow pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={
-          {
-            '--card-accent': `color-mix(in oklch, ${feature.color} 15%, transparent)`,
-          } as React.CSSProperties
-        }
-      />
-
-      {/* Shine sweep */}
-      <div className="tilt-card-shine pointer-events-none absolute inset-0 overflow-hidden" />
-
       {/* Decorative blob */}
       <div
         className={cn(
@@ -135,6 +121,6 @@ export function FeatureCard({
           </a>
         </div>
       )}
-    </div>
+    </BorderGlow>
   );
 }

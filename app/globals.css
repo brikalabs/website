@@ -712,6 +712,14 @@
      Two animations layered: a one-shot entry pop, and an infinite gentle
      drift. The chip rests at its target opacity/scale via the entry's
      `backwards` fill and the float keeping `--chip-scale` baked in. */
+  /* Stacking context for the brand-mark group: clamps `-z-10` backlights
+     behind the tiles and isolates the rays' `mix-blend-mode: screen` so
+     it doesn't pick up the section's dark surface. No paint clipping —
+     chips with negative offsets stay visible outside the 360px box. */
+  .clay-stack {
+    isolation: isolate;
+  }
+
   .clay-chip {
     transform-origin: center;
     opacity: var(--chip-opacity, 1);

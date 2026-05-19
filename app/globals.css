@@ -712,13 +712,6 @@
      Two animations layered: a one-shot entry pop, and an infinite gentle
      drift. The chip rests at its target opacity/scale via the entry's
      `backwards` fill and the float keeping `--chip-scale` baked in. */
-  /* Compositing optimization: skip render work when the whole stack is
-     off-screen. The intrinsic-size hint keeps scroll position stable. */
-  .clay-stack {
-    content-visibility: auto;
-    contain-intrinsic-size: 360px 360px;
-  }
-
   .clay-chip {
     transform-origin: center;
     opacity: var(--chip-opacity, 1);

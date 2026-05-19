@@ -717,7 +717,6 @@
   .clay-stack {
     content-visibility: auto;
     contain-intrinsic-size: 360px 360px;
-    contain: layout paint style;
   }
 
   .clay-chip {
